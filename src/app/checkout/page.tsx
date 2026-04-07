@@ -24,7 +24,7 @@ export default function CheckoutPage({ searchParams }: PageProps) {
     : null;
 
   return (
-    <>
+    <div className="pb-24">
       <Header />
       <main className="min-h-[80vh] bg-surface-secondary">
         <ProgressBar current="checkout" />
@@ -52,6 +52,6 @@ export default function CheckoutPage({ searchParams }: PageProps) {
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

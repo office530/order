@@ -166,12 +166,18 @@ export default function AuthForm() {
             נשלח לך קוד אימות חד-פעמי ב-SMS
           </p>
 
-          <label className="block text-sm font-semibold text-ink-primary mb-2">
+          <label
+            htmlFor="auth-phone"
+            className="block text-sm font-semibold text-ink-primary mb-2"
+          >
             מספר טלפון
           </label>
           <input
+            id="auth-phone"
+            name="phone"
             type="tel"
             inputMode="numeric"
+            autoComplete="tel"
             dir="ltr"
             placeholder="050-123-4567"
             value={phoneRaw}
@@ -180,17 +186,25 @@ export default function AuthForm() {
               setError(null);
             }}
             autoFocus
+            aria-invalid={error ? "true" : undefined}
+            aria-describedby={error ? "auth-phone-error" : undefined}
             className="w-full px-4 py-3.5 rounded-lg border border-line bg-white text-ink-primary text-lg tabular-nums text-center focus:outline-none focus:border-primary-500 focus:shadow-ring-blue transition"
           />
 
           {error && (
-            <p className="mt-3 text-sm text-danger text-center">{error}</p>
+            <p
+              id="auth-phone-error"
+              role="alert"
+              className="mt-3 text-sm text-danger text-center"
+            >
+              {error}
+            </p>
           )}
 
           <button
             type="submit"
             disabled={!phoneValid || loading}
-            className="btn-primary w-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+            className="btn-primary w-full mt-6"
           >
             {loading ? "שולח קוד..." : "שלח קוד אימות"}
           </button>
@@ -220,13 +234,20 @@ export default function AuthForm() {
             </span>
           </p>
 
-          <div dir="ltr" className="flex justify-center gap-3 mb-4">
+          <div
+            dir="ltr"
+            role="group"
+            aria-label="קוד אימות"
+            className="flex justify-center gap-3 mb-4"
+          >
             {code.map((d, idx) => (
               <input
                 key={idx}
                 id={`otp-${idx}`}
+                aria-label={`ספרה ${idx + 1}`}
                 type="text"
                 inputMode="numeric"
+                autoComplete="one-time-code"
                 maxLength={1}
                 value={d}
                 autoFocus={idx === 0}

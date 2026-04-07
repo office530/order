@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { normalizePhone } from "@/lib/phone";
 import { getOrdersStore } from "@/lib/orders-store";
-import { estimatePrice } from "@/lib/pricing";
+import { AREA_MAX_SQM, AREA_MIN_SQM, EMAIL_RE, estimatePrice } from "@/lib/pricing";
 import type { Location, PackageId } from "@/lib/types";
 
 const VALID_PACKAGES: PackageId[] = ["essential", "classic", "premium", "signature"];
@@ -55,11 +55,15 @@ export async function POST(request: Request) {
   }
   if (
     typeof body.areaSqm !== "number" ||
-    body.areaSqm < 50 ||
-    body.areaSqm > 2000
+    body.areaSqm < AREA_MIN_SQM ||
+    body.areaSqm > AREA_MAX_SQM
   ) {
     return NextResponse.json(
-      { ok: false, error: "invalid_area", message: "שטח חייב להיות בין 50 ל-2000 מ״ר" },
+      {
+        ok: false,
+        error: "invalid_area",
+        message: `שטח חייב להיות בין ${AREA_MIN_SQM} ל-${AREA_MAX_SQM} מ״ר`,
+      },
       { status: 400 }
     );
   }
@@ -69,7 +73,7 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-  if (!body.contactEmail || !/^\S+@\S+\.\S+$/.test(body.contactEmail)) {
+  if (!body.contactEmail || !EMAIL_RE.test(body.contactEmail)) {
     return NextResponse.json(
       { ok: false, error: "invalid_email", message: "אימייל לא תקין" },
       { status: 400 }

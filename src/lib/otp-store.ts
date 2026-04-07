@@ -8,6 +8,7 @@
  */
 
 import "server-only";
+import { supabaseAdmin, supabaseEnabled } from "./supabase/admin";
 
 export interface OtpSession {
   phone: string;
@@ -94,24 +95,9 @@ const memoryStore: OtpStore = {
 
 /* ──────────────────────── Supabase backend ──────────────────────── */
 
-function supabaseEnabled(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
-}
-
-async function supabaseAdmin() {
-  const { createClient } = await import("@supabase/supabase-js");
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
-
 const supabaseStore: OtpStore = {
   async create({ phone, code, expiresAt }) {
-    const sb = await supabaseAdmin();
+    const sb = supabaseAdmin();
     await sb.from("otp_sessions").insert({
       phone,
       code,
@@ -120,7 +106,7 @@ const supabaseStore: OtpStore = {
   },
 
   async getActive(phone) {
-    const sb = await supabaseAdmin();
+    const sb = supabaseAdmin();
     const { data } = await sb
       .from("otp_sessions")
       .select("*")
@@ -141,10 +127,10 @@ const supabaseStore: OtpStore = {
     };
   },
 
+  // Single UPDATE — no pre-SELECT. The bounded `expires_at` filter ensures
+  // we only touch the active session.
   async markVerified(phone) {
-    const sb = await supabaseAdmin();
-    const active = await this.getActive(phone);
-    if (!active) return;
+    const sb = supabaseAdmin();
     await sb
       .from("otp_sessions")
       .update({ verified: true })
@@ -152,8 +138,9 @@ const supabaseStore: OtpStore = {
       .gte("expires_at", new Date().toISOString());
   },
 
+  // TODO: convert to a Postgres RPC for atomic increment to avoid races
   async incrementAttempts(phone) {
-    const sb = await supabaseAdmin();
+    const sb = supabaseAdmin();
     const active = await this.getActive(phone);
     if (!active) return;
     await sb
@@ -164,7 +151,7 @@ const supabaseStore: OtpStore = {
   },
 
   async countRecentSends(phone, windowMinutes) {
-    const sb = await supabaseAdmin();
+    const sb = supabaseAdmin();
     const since = new Date(Date.now() - windowMinutes * 60_000).toISOString();
     const { count } = await sb
       .from("otp_sessions")

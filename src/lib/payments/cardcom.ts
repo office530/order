@@ -1,4 +1,5 @@
 import "server-only";
+import { DEPOSIT_AMOUNT } from "@/lib/pricing";
 import type { PaymentProvider } from "./types";
 
 /**
@@ -36,7 +37,7 @@ export const cardcomProvider: PaymentProvider = {
       ApiName: username,
       Operation: "ChargeOnly",
       ReturnValue: order.id, // we recover this in the webhook
-      Amount: 2000, // deposit
+      Amount: DEPOSIT_AMOUNT,
       ProductName: `מקדמה לפרויקט #${order.id.slice(0, 8)}`,
       SuccessRedirectUrl: returnUrl,
       FailedRedirectUrl: returnUrl + "&status=failed",

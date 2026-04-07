@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Package, PackageId } from "@/lib/types";
 import { useOrder } from "@/hooks/useOrder";
@@ -13,22 +13,21 @@ interface Props {
 
 const RECOMMENDED_ID: PackageId = "classic";
 
-/**
- * Order packages spec-style:
- * SIGNATURE first (anchor pricing), then PREMIUM, CLASSIC (★), ESSENTIAL.
- */
-function arrange(pkgs: Package[]): Package[] {
-  const order: PackageId[] = ["signature", "premium", "classic", "essential"];
-  return order
-    .map((id) => pkgs.find((p) => p.id === id))
-    .filter((p): p is Package => Boolean(p));
-}
+// SIGNATURE first (anchor pricing), then PREMIUM, CLASSIC (★), ESSENTIAL.
+const DISPLAY_ORDER: PackageId[] = ["signature", "premium", "classic", "essential"];
 
 export default function PackageGrid({ packages }: Props) {
   const router = useRouter();
-  const arranged = arrange(packages);
   const storePackageId = useOrder((s) => s.packageId);
   const setPackage = useOrder((s) => s.setPackage);
+
+  const arranged = useMemo(
+    () =>
+      DISPLAY_ORDER.map((id) => packages.find((p) => p.id === id)).filter(
+        (p): p is Package => Boolean(p)
+      ),
+    [packages]
+  );
 
   // preselect from store if returning to page, otherwise default to CLASSIC
   const [selected, setSelected] = useState<PackageId>(
@@ -48,7 +47,11 @@ export default function PackageGrid({ packages }: Props) {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 pb-32">
+      <div
+        role="radiogroup"
+        aria-label="בחירת חבילה"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+      >
         {arranged.map((pkg) => (
           <PackageCard
             key={pkg.id}
@@ -60,7 +63,6 @@ export default function PackageGrid({ packages }: Props) {
         ))}
       </div>
 
-      {/* Tesla-style sticky footer */}
       <div className="fixed bottom-0 inset-x-0 z-20 bg-white border-t border-line shadow-sticky">
         <div className="container-prose flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
           <div className="text-center sm:text-right">

@@ -1,5 +1,7 @@
 "use client";
 
+import { AREA_MAX_SQM, AREA_MIN_SQM } from "@/lib/pricing";
+
 interface Props {
   value: number;
   onChange: (value: number) => void;
@@ -13,8 +15,8 @@ const PRESETS = [100, 200, 350, 500, 800];
 export default function AreaInput({
   value,
   onChange,
-  min = 50,
-  max = 2000,
+  min = AREA_MIN_SQM,
+  max = AREA_MAX_SQM,
   step = 10,
 }: Props) {
   const clamped = Math.max(min, Math.min(max, value));
@@ -23,9 +25,13 @@ export default function AreaInput({
   return (
     <div>
       <div className="flex items-baseline justify-between mb-3">
-        <label className="text-sm font-semibold text-ink-primary">שטח המשרד</label>
+        <label htmlFor="cfg-area-num" className="text-sm font-semibold text-ink-primary">
+          שטח המשרד
+        </label>
         <div className="flex items-baseline gap-1">
           <input
+            id="cfg-area-num"
+            name="area"
             type="number"
             inputMode="numeric"
             value={clamped}
@@ -36,6 +42,7 @@ export default function AreaInput({
               const n = Number(e.target.value);
               if (!Number.isNaN(n)) onChange(n);
             }}
+            aria-label="שטח המשרד במטרים רבועים"
             className="w-24 px-3 py-1.5 rounded-lg border border-line bg-white text-lg font-bold text-ink-primary text-center tabular-nums focus:outline-none focus:border-primary-500 focus:shadow-ring-blue transition"
           />
           <span className="text-sm text-ink-secondary font-medium">מ״ר</span>
@@ -52,6 +59,7 @@ export default function AreaInput({
           value={clamped}
           onChange={(e) => onChange(Number(e.target.value))}
           dir="ltr"
+          aria-label={`גרור לשינוי שטח המשרד, ערך נוכחי ${clamped} מטרים רבועים`}
           className="area-slider"
           style={{
             background: `linear-gradient(to right, #2563EB 0%, #2563EB ${percent}%, #E8ECF2 ${percent}%, #E8ECF2 100%)`,

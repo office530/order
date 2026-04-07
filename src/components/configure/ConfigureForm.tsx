@@ -3,47 +3,62 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Location } from "@/lib/types";
-import { useOrder } from "@/hooks/useOrder";
+import { useOrder, useOrderHydrated } from "@/hooks/useOrder";
 import AreaInput from "./AreaInput";
 import LocationSelect from "./LocationSelect";
 import PriceCalculator from "./PriceCalculator";
-import { estimatePrice, formatILS } from "@/lib/pricing";
+import {
+  AREA_MAX_SQM,
+  AREA_MIN_SQM,
+  EMAIL_RE,
+  estimatePrice,
+  formatILS,
+} from "@/lib/pricing";
 
 export default function ConfigureForm() {
   const router = useRouter();
+  const hydrated = useOrderHydrated();
   const packageId = useOrder((s) => s.packageId);
-  const storedArea = useOrder((s) => s.areaSqm);
-  const storedLocation = useOrder((s) => s.location);
-  const storedFloor = useOrder((s) => s.floor);
-  const storedName = useOrder((s) => s.contactName);
-  const storedEmail = useOrder((s) => s.contactEmail);
   const setConfigure = useOrder((s) => s.setConfigure);
 
-  const [area, setArea] = useState<number>(storedArea ?? 200);
-  const [location, setLocation] = useState<Location | null>(
-    storedLocation ?? "center"
-  );
-  const [floor, setFloor] = useState<string>(
-    storedFloor !== null && storedFloor !== undefined ? String(storedFloor) : ""
-  );
-  const [contactName, setContactName] = useState(storedName ?? "");
-  const [contactEmail, setContactEmail] = useState(storedEmail ?? "");
+  const [area, setArea] = useState<number>(200);
+  const [location, setLocation] = useState<Location | null>("center");
+  const [floor, setFloor] = useState<string>("");
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // Redirect to /packages if none selected
+  // Hydrate local form state from the persisted draft once it's available.
+  // We snapshot via getState() to avoid making the effect re-run on every
+  // store change (which would clobber in-progress edits).
   useEffect(() => {
-    if (!packageId) {
+    if (!hydrated) return;
+    const s = useOrder.getState();
+    if (s.areaSqm !== null) setArea(s.areaSqm);
+    if (s.location !== null) setLocation(s.location);
+    if (s.floor !== null) setFloor(String(s.floor));
+    if (s.contactName) setContactName(s.contactName);
+    if (s.contactEmail) setContactEmail(s.contactEmail);
+    if (s.companyName) setCompanyName(s.companyName);
+  }, [hydrated]);
+
+  // Redirect to /packages if no package selected — but only after the
+  // persisted draft has loaded. Read directly from the store so we always
+  // get the freshest snapshot, not a stale React subscription value.
+  useEffect(() => {
+    if (!hydrated) return;
+    if (!useOrder.getState().packageId) {
       router.replace("/packages");
     }
-  }, [packageId, router]);
+  }, [hydrated, router]);
 
-  const emailValid = contactEmail.length === 0 || /^\S+@\S+\.\S+$/.test(contactEmail);
+  const emailValid = contactEmail.length === 0 || EMAIL_RE.test(contactEmail);
   const canSubmit =
     packageId !== null &&
     location !== null &&
-    area >= 50 &&
-    area <= 2000 &&
+    area >= AREA_MIN_SQM &&
+    area <= AREA_MAX_SQM &&
     contactName.trim().length >= 2 &&
     emailValid &&
     contactEmail.length > 0;
@@ -75,13 +90,14 @@ export default function ConfigureForm() {
       floor: parsedFloor,
       contactName: contactName.trim(),
       contactEmail: contactEmail.trim(),
+      companyName: companyName.trim() || null,
     });
 
     router.push("/checkout");
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-5 gap-8 pb-32">
+    <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-5 gap-8">
       {/* Form column */}
       <div className="lg:col-span-3 space-y-8">
         {/* Area */}
@@ -96,18 +112,24 @@ export default function ConfigureForm() {
 
         {/* Floor */}
         <section className="card p-6">
-          <label className="block text-sm font-semibold text-ink-primary mb-2">
+          <label
+            htmlFor="cfg-floor"
+            className="block text-sm font-semibold text-ink-primary mb-2"
+          >
             קומה (אופציונלי)
           </label>
           <input
+            id="cfg-floor"
+            name="floor"
             type="number"
             inputMode="numeric"
             placeholder="למשל: 5"
             value={floor}
             onChange={(e) => setFloor(e.target.value)}
+            aria-describedby="cfg-floor-help"
             className="w-full sm:w-40 px-4 py-2.5 rounded-lg border border-line bg-white text-ink-primary focus:outline-none focus:border-primary-500 focus:shadow-ring-blue transition"
           />
-          <p className="text-xs text-ink-secondary mt-2">
+          <p id="cfg-floor-help" className="text-xs text-ink-secondary mt-2">
             חשוב לנו לדעת בשביל תיאום לוגיסטיקה ומעלית משא
           </p>
         </section>
@@ -118,11 +140,17 @@ export default function ConfigureForm() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-ink-secondary mb-1">
+              <label
+                htmlFor="cfg-company"
+                className="block text-xs font-semibold text-ink-secondary mb-1"
+              >
                 שם חברה (אופציונלי)
               </label>
               <input
+                id="cfg-company"
+                name="company"
                 type="text"
+                autoComplete="organization"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 placeholder="למשל: סייבר אנג׳ינירינג בע״מ"
@@ -131,41 +159,64 @@ export default function ConfigureForm() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-ink-secondary mb-1">
+              <label
+                htmlFor="cfg-name"
+                className="block text-xs font-semibold text-ink-secondary mb-1"
+              >
                 שם איש קשר *
               </label>
               <input
+                id="cfg-name"
+                name="name"
                 type="text"
+                autoComplete="name"
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
                 placeholder="שם מלא"
                 required
+                aria-required="true"
                 className="w-full px-4 py-2.5 rounded-lg border border-line bg-white text-ink-primary focus:outline-none focus:border-primary-500 focus:shadow-ring-blue transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-ink-secondary mb-1">
+              <label
+                htmlFor="cfg-email"
+                className="block text-xs font-semibold text-ink-secondary mb-1"
+              >
                 אימייל *
               </label>
               <input
+                id="cfg-email"
+                name="email"
                 type="email"
+                autoComplete="email"
                 dir="ltr"
                 value={contactEmail}
                 onChange={(e) => setContactEmail(e.target.value)}
                 placeholder="you@company.com"
                 required
+                aria-required="true"
+                aria-invalid={!emailValid && contactEmail.length > 0 ? "true" : undefined}
+                aria-describedby={
+                  !emailValid && contactEmail.length > 0 ? "cfg-email-error" : undefined
+                }
                 className="w-full px-4 py-2.5 rounded-lg border border-line bg-white text-ink-primary text-left focus:outline-none focus:border-primary-500 focus:shadow-ring-blue transition"
               />
               {!emailValid && contactEmail.length > 0 && (
-                <p className="text-xs text-danger mt-1">כתובת אימייל לא תקינה</p>
+                <p id="cfg-email-error" role="alert" className="text-xs text-danger mt-1">
+                  כתובת אימייל לא תקינה
+                </p>
               )}
             </div>
           </div>
         </section>
 
         {error && (
-          <div className="p-4 rounded-lg bg-danger/10 border border-danger/20 text-sm text-danger">
+          <div
+            role="alert"
+            className="p-4 rounded-lg bg-danger/10 border border-danger/20 text-sm text-danger"
+          >
             {error}
           </div>
         )}
@@ -196,7 +247,7 @@ export default function ConfigureForm() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className="btn-primary whitespace-nowrap w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+            className="btn-primary whitespace-nowrap w-full sm:w-auto"
           >
             המשך לסיכום ←
           </button>

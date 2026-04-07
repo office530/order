@@ -13,7 +13,7 @@ export default async function PackagesPage() {
   const packages = await loadPackages();
 
   return (
-    <>
+    <div className="pb-24">
       <Header />
       <main className="min-h-[80vh] bg-surface-secondary">
         <ProgressBar current="packages" />
@@ -34,6 +34,6 @@ export default async function PackagesPage() {
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

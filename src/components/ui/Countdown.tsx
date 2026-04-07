@@ -28,7 +28,12 @@ function calc(deadline: string): Remaining {
 
 /**
  * Countdown — ticks every second to a given deadline.
- * Initialized to null on first render to avoid hydration mismatch
+ *
+ * Renders as a single tabular block: `14d 06:13:36`. Days are spelled out
+ * because they're easier to read at a glance; hours/minutes/seconds use
+ * a colon-separated digital-clock format.
+ *
+ * Starts at `null` on first render to avoid hydration mismatch
  * (server `Date.now()` ≠ client `Date.now()`).
  */
 export default function Countdown({ deadline, className = "" }: Props) {
@@ -40,32 +45,36 @@ export default function Countdown({ deadline, className = "" }: Props) {
     return () => clearInterval(id);
   }, [deadline]);
 
-  return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <Cell value={remaining?.days} label="ימים" />
-      <Sep />
-      <Cell value={remaining?.hours} label="שעות" />
-      <Sep />
-      <Cell value={remaining?.minutes} label="דקות" />
-      <Sep />
-      <Cell value={remaining?.seconds} label="שניות" />
-    </div>
-  );
-}
+  if (!remaining) {
+    // Reserve space so layout doesn't shift when the timer arrives
+    return (
+      <span
+        className={`inline-block tabular-nums text-sm font-semibold text-ink-primary ${className}`}
+        dir="ltr"
+      >
+        — — :— — :— —
+      </span>
+    );
+  }
 
-function Cell({ value, label }: { value: number | undefined; label: string }) {
-  return (
-    <div className="text-center min-w-[2.4rem]">
-      <div className="text-base sm:text-lg font-bold text-ink-primary tabular-nums leading-none">
-        {value === undefined ? "—" : value.toString().padStart(2, "0")}
-      </div>
-      <div className="text-[10px] text-ink-secondary uppercase tracking-wider mt-1">
-        {label}
-      </div>
-    </div>
-  );
-}
+  const hh = remaining.hours.toString().padStart(2, "0");
+  const mm = remaining.minutes.toString().padStart(2, "0");
+  const ss = remaining.seconds.toString().padStart(2, "0");
 
-function Sep() {
-  return <div className="text-line-strong text-lg font-light leading-none -mt-2">:</div>;
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 tabular-nums text-sm font-semibold text-ink-primary ${className}`}
+      dir="ltr"
+      aria-label={`${remaining.days} ימים ${hh} שעות ${mm} דקות ${ss} שניות`}
+    >
+      <span>
+        {remaining.days}
+        <span className="text-ink-secondary font-normal mx-0.5">ימ׳</span>
+      </span>
+      <span className="text-ink-secondary">·</span>
+      <span>
+        {hh}:{mm}:{ss}
+      </span>
+    </span>
+  );
 }

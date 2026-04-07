@@ -2,31 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOrdersStore } from "@/lib/orders-store";
 import { getPackage } from "@/lib/packages";
-import { formatILS, ONLINE_DISCOUNT, estimatePrice } from "@/lib/pricing";
+import { DEPOSIT_AMOUNT, formatILS, ONLINE_DISCOUNT, estimatePrice } from "@/lib/pricing";
+import { LOCATION_LABELS, STATUS_LABELS } from "@/lib/labels";
 
 export const metadata = {
   title: "פרטי הזמנה | RNVT Admin",
   robots: { index: false, follow: false },
-};
-
-const LOCATION_LABELS: Record<string, string> = {
-  center: "מרכז",
-  sharon: "שרון",
-  jerusalem: "ירושלים",
-  haifa: "חיפה",
-  north: "צפון",
-  south: "דרום",
-};
-
-const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
-  pending: { label: "ממתינה לתשלום", cls: "bg-ink-secondary/10 text-ink-secondary" },
-  paid: { label: "מקדמה שולמה", cls: "bg-success/10 text-success" },
-  contract_sent: { label: "חוזה נשלח", cls: "bg-primary-50 text-primary-600" },
-  contract_signed: { label: "חוזה חתום", cls: "bg-primary-50 text-primary-600" },
-  meeting_scheduled: { label: "פגישה נקבעה", cls: "bg-gold-500/10 text-gold-600" },
-  active: { label: "בעבודה", cls: "bg-success/10 text-success" },
-  cancelled: { label: "בוטלה", cls: "bg-danger/10 text-danger" },
-  refunded: { label: "הוחזר", cls: "bg-ink-secondary/10 text-ink-secondary" },
 };
 
 interface PageProps {
@@ -178,7 +159,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
                 )
               }
             />
-            <Field label="סכום מקדמה" value={formatILS(2000)} />
+            <Field label="סכום מקדמה" value={formatILS(DEPOSIT_AMOUNT)} />
             <Field
               label="מזהה תשלום"
               value={

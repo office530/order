@@ -3,40 +3,47 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useOrder } from "@/hooks/useOrder";
+import { useOrder, useOrderHydrated } from "@/hooks/useOrder";
 import { getPackage } from "@/lib/packages";
-import { estimatePrice, formatILS, ONLINE_DISCOUNT } from "@/lib/pricing";
-import type { Location } from "@/lib/types";
-
-const LOCATION_LABELS: Record<Location, string> = {
-  center: "מרכז",
-  sharon: "שרון",
-  jerusalem: "ירושלים",
-  haifa: "חיפה",
-  north: "צפון",
-  south: "דרום",
-};
+import { DEPOSIT_AMOUNT, estimatePrice, formatILS, ONLINE_DISCOUNT } from "@/lib/pricing";
+import { LOCATION_LABELS } from "@/lib/labels";
 
 export default function CheckoutSummary() {
   const router = useRouter();
-  const order = useOrder();
+  const hydrated = useOrderHydrated();
+  // Slice selectors so each field re-renders only when it changes
+  const phone = useOrder((s) => s.phone);
+  const packageId = useOrder((s) => s.packageId);
+  const areaSqm = useOrder((s) => s.areaSqm);
+  const location = useOrder((s) => s.location);
+  const floor = useOrder((s) => s.floor);
+  const contactName = useOrder((s) => s.contactName);
+  const contactEmail = useOrder((s) => s.contactEmail);
+  const companyName = useOrder((s) => s.companyName);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Redirect to /configure if any required data is missing
   useEffect(() => {
-    if (!order.phone || !order.packageId || !order.areaSqm || !order.location) {
+    if (!hydrated) return;
+    const s = useOrder.getState();
+    if (!s.phone || !s.packageId || !s.areaSqm || !s.location) {
       router.replace("/configure");
     }
-  }, [order, router]);
+  }, [hydrated, router]);
 
-  if (!order.phone || !order.packageId || !order.areaSqm || !order.location) {
+  if (!hydrated) {
+    return (
+      <div className="py-24 text-center text-ink-secondary text-sm">טוען…</div>
+    );
+  }
+
+  if (!phone || !packageId || !areaSqm || !location) {
     return null;
   }
 
-  const pkg = getPackage(order.packageId);
-  const estimate = estimatePrice(order.packageId, order.areaSqm, order.location);
+  const pkg = getPackage(packageId);
+  const estimate = estimatePrice(packageId, areaSqm, location);
 
   if (!pkg || !estimate) return null;
 
@@ -44,18 +51,18 @@ export default function CheckoutSummary() {
     setError(null);
     setSubmitting(true);
     try {
-      // 1. Create the order record
       const orderRes = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          phone: order.phone,
-          packageId: order.packageId,
-          areaSqm: order.areaSqm,
-          location: order.location,
-          floor: order.floor,
-          contactName: order.contactName,
-          contactEmail: order.contactEmail,
+          phone,
+          packageId,
+          areaSqm,
+          location,
+          floor,
+          contactName,
+          contactEmail,
+          companyName,
         }),
       });
       const orderData = await orderRes.json();
@@ -65,7 +72,6 @@ export default function CheckoutSummary() {
         return;
       }
 
-      // 2. Initiate payment for that order — provider chosen by env.
       // Mock provider returns a local /success URL and marks paid immediately.
       // Real providers (Meshulam/CardCom) return their hosted payment page.
       const payRes = await fetch("/api/payment/init", {
@@ -80,8 +86,7 @@ export default function CheckoutSummary() {
         return;
       }
 
-      // 3. Redirect to whatever the provider gave us
-      // (absolute URL for real gateways, /success for mock)
+      // Absolute URL for real gateways, local /success for mock
       window.location.href = payData.redirectUrl;
     } catch {
       setError("שגיאת רשת");
@@ -90,7 +95,7 @@ export default function CheckoutSummary() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 pb-32">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
       {/* Left: order summary */}
       <div className="lg:col-span-3 space-y-6">
         {/* Package summary */}
@@ -153,24 +158,24 @@ export default function CheckoutSummary() {
             <div>
               <dt className="text-xs text-ink-secondary mb-1">שטח</dt>
               <dd className="font-bold text-ink-primary tabular-nums">
-                {order.areaSqm.toLocaleString("he-IL")} מ״ר
+                {areaSqm.toLocaleString("he-IL")} מ״ר
               </dd>
             </div>
             <div>
               <dt className="text-xs text-ink-secondary mb-1">אזור</dt>
               <dd className="font-bold text-ink-primary">
-                {LOCATION_LABELS[order.location]}
+                {LOCATION_LABELS[location]}
               </dd>
             </div>
             <div>
               <dt className="text-xs text-ink-secondary mb-1">קומה</dt>
               <dd className="font-bold text-ink-primary tabular-nums">
-                {order.floor ?? "—"}
+                {floor ?? "—"}
               </dd>
             </div>
             <div>
               <dt className="text-xs text-ink-secondary mb-1">איש קשר</dt>
-              <dd className="font-bold text-ink-primary">{order.contactName}</dd>
+              <dd className="font-bold text-ink-primary">{contactName}</dd>
             </div>
           </dl>
         </section>
@@ -213,11 +218,11 @@ export default function CheckoutSummary() {
             </div>
             <div className="flex items-center justify-between text-ink-secondary">
               <span>שטח</span>
-              <span className="tabular-nums">{order.areaSqm.toLocaleString("he-IL")} מ״ר</span>
+              <span className="tabular-nums">{areaSqm.toLocaleString("he-IL")} מ״ר</span>
             </div>
             <div className="flex items-center justify-between text-ink-secondary">
               <span>אזור</span>
-              <span>{LOCATION_LABELS[order.location]}</span>
+              <span>{LOCATION_LABELS[location]}</span>
             </div>
           </div>
 
@@ -250,7 +255,7 @@ export default function CheckoutSummary() {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-extrabold text-primary-700 tabular-nums">
-                {formatILS(2000)}
+                {formatILS(DEPOSIT_AMOUNT)}
               </span>
               <span className="text-xs text-primary-700">מקדמה</span>
             </div>
@@ -260,7 +265,10 @@ export default function CheckoutSummary() {
           </div>
 
           {error && (
-            <div className="mb-3 p-3 rounded-lg bg-danger/10 border border-danger/20 text-xs text-danger">
+            <div
+              role="alert"
+              className="mb-3 p-3 rounded-lg bg-danger/10 border border-danger/20 text-xs text-danger"
+            >
               {error}
             </div>
           )}
@@ -269,7 +277,7 @@ export default function CheckoutSummary() {
             type="button"
             onClick={handleReserve}
             disabled={submitting}
-            className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+            className="btn-primary w-full"
           >
             {submitting ? "מעבד..." : `שריין מקום — ‎₪2,000`}
           </button>
@@ -286,14 +294,14 @@ export default function CheckoutSummary() {
           <div>
             <div className="text-[11px] text-ink-secondary font-medium">היום</div>
             <div className="text-xl font-extrabold text-primary-500 tabular-nums">
-              {formatILS(2000)}
+              {formatILS(DEPOSIT_AMOUNT)}
             </div>
           </div>
           <button
             type="button"
             onClick={handleReserve}
             disabled={submitting}
-            className="btn-primary disabled:opacity-50"
+            className="btn-primary"
           >
             {submitting ? "מעבד..." : "שריין מקום"}
           </button>

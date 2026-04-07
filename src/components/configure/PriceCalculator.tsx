@@ -1,9 +1,9 @@
 "use client";
 
-import { estimatePrice, formatILS, ONLINE_DISCOUNT } from "@/lib/pricing";
+import { DEPOSIT_AMOUNT, estimatePrice, formatILS, ONLINE_DISCOUNT } from "@/lib/pricing";
 import type { Location, PackageId } from "@/lib/types";
 import { getPackage } from "@/lib/packages";
-import CountUp from "@/components/ui/CountUp";
+import { LOCATION_LABELS } from "@/lib/labels";
 
 interface Props {
   packageId: PackageId | null;
@@ -53,7 +53,7 @@ export default function PriceCalculator({ packageId, areaSqm, location }: Props)
         <div>
           <div className="text-xs text-ink-secondary">אזור</div>
           <div className="text-sm font-bold text-ink-primary">
-            {location ? LABELS[location] : "לא נבחר"}
+            {location ? LOCATION_LABELS[location] : "לא נבחר"}
           </div>
         </div>
       </div>
@@ -64,8 +64,8 @@ export default function PriceCalculator({ packageId, areaSqm, location }: Props)
         {estimate ? (
           <>
             <div className="flex items-baseline gap-2 mb-1">
-              <span className="text-4xl font-extrabold text-primary-500 tabular-nums">
-                <CountUp to={estimate.finalPrice} prefix="₪" />
+              <span className="text-4xl font-extrabold text-primary-500 tabular-nums transition-all">
+                {formatILS(estimate.finalPrice)}
               </span>
             </div>
             <div className="flex items-center gap-2 text-xs mb-4">
@@ -87,7 +87,7 @@ export default function PriceCalculator({ packageId, areaSqm, location }: Props)
                 מקדמה לשריון התור
               </div>
               <div className="text-lg font-extrabold text-primary-700 tabular-nums">
-                {formatILS(2000)}
+                {formatILS(DEPOSIT_AMOUNT)}
               </div>
               <div className="text-[11px] text-primary-700/70 mt-1">
                 החזר מלא תוך 30 יום אם לא מתקדמים
@@ -103,12 +103,3 @@ export default function PriceCalculator({ packageId, areaSqm, location }: Props)
     </div>
   );
 }
-
-const LABELS: Record<Location, string> = {
-  center: "מרכז",
-  sharon: "שרון",
-  jerusalem: "ירושלים",
-  haifa: "חיפה",
-  north: "צפון",
-  south: "דרום",
-};

@@ -17,6 +17,14 @@ export const LOCATION_MULTIPLIERS: Record<Location, number> = {
 export const DEPOSIT_AMOUNT = Number(process.env.DEPOSIT_AMOUNT ?? 2000);
 export const ONLINE_DISCOUNT = Number(process.env.ONLINE_DISCOUNT ?? 30000);
 
+/** Smallest accepted office area in square meters */
+export const AREA_MIN_SQM = 50;
+/** Largest accepted office area in square meters */
+export const AREA_MAX_SQM = 2000;
+
+/** Loose RFC-style email check; good enough for client-side hints. */
+export const EMAIL_RE = /^\S+@\S+\.\S+$/;
+
 export interface PriceEstimate {
   base: number;
   total: number;

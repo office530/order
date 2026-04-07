@@ -1,4 +1,5 @@
 import "server-only";
+import { DEPOSIT_AMOUNT } from "@/lib/pricing";
 import type { PaymentProvider } from "./types";
 
 /**
@@ -42,7 +43,7 @@ export const meshulamProvider: PaymentProvider = {
       userId,
       pageCode,
       apiKey,
-      sum: String(2000), // deposit only — full price tracked separately
+      sum: String(DEPOSIT_AMOUNT),
       description: `מקדמה לפרויקט #${order.id.slice(0, 8)}`,
       paymentType: "regular",
       pageField: JSON.stringify({

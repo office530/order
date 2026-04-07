@@ -1,5 +1,8 @@
 export type PackageId = "essential" | "classic" | "premium" | "signature";
 
+/** Steps in the customer-facing funnel — used by ProgressBar + skeleton pages. */
+export type FunnelStep = "auth" | "packages" | "configure" | "checkout" | "success";
+
 export type Location =
   | "center"
   | "sharon"

@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function ConfigurePage() {
   return (
-    <>
+    <div className="pb-24">
       <Header />
       <main className="min-h-[80vh] bg-surface-secondary">
         <ProgressBar current="configure" />
@@ -30,6 +30,6 @@ export default function ConfigurePage() {
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

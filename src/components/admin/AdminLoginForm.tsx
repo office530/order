@@ -40,11 +40,17 @@ export default function AdminLoginForm() {
         <h1 className="text-2xl font-bold text-ink-primary">התחברות</h1>
       </div>
 
-      <label className="block text-sm font-semibold text-ink-primary mb-2">
+      <label
+        htmlFor="admin-password"
+        className="block text-sm font-semibold text-ink-primary mb-2"
+      >
         סיסמת מנהל
       </label>
       <input
+        id="admin-password"
+        name="password"
         type="password"
+        autoComplete="current-password"
         value={password}
         onChange={(e) => {
           setPassword(e.target.value);
@@ -52,15 +58,26 @@ export default function AdminLoginForm() {
         }}
         autoFocus
         required
+        aria-required="true"
+        aria-invalid={error ? "true" : undefined}
+        aria-describedby={error ? "admin-password-error" : undefined}
         className="w-full px-4 py-3 rounded-lg border border-line bg-white text-ink-primary focus:outline-none focus:border-primary-500 focus:shadow-ring-blue transition"
       />
 
-      {error && <p className="mt-3 text-sm text-danger text-center">{error}</p>}
+      {error && (
+        <p
+          id="admin-password-error"
+          role="alert"
+          className="mt-3 text-sm text-danger text-center"
+        >
+          {error}
+        </p>
+      )}
 
       <button
         type="submit"
         disabled={loading || password.length < 1}
-        className="btn-primary w-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+        className="btn-primary w-full mt-6"
       >
         {loading ? "מתחבר..." : "התחבר"}
       </button>

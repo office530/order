@@ -24,38 +24,34 @@ export default function PackageCard({ pkg, selected, recommended, onSelect }: Pr
   const isSignature = pkg.id === "signature";
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      aria-label={`בחר חבילת ${pkg.name_he}, ${formatILS(pkg.price_per_sqm)} למטר רבוע`}
       onClick={() => onSelect(pkg.id)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onSelect(pkg.id);
-        }
-      }}
       className={[
-        "relative card card-hover p-6 cursor-pointer transition-all duration-200 h-full flex flex-col",
+        "relative card card-hover p-6 cursor-pointer transition-all duration-200 h-full flex flex-col text-right",
+        "focus:outline-none focus-visible:shadow-ring-blue",
         selected && "border-2 border-primary-500 shadow-ring-blue",
         !selected && recommended && "border-primary-500/40",
       ]
         .filter(Boolean)
         .join(" ")}
     >
-      {/* badges */}
       {recommended && !isSignature && (
-        <div className="absolute -top-3 inset-x-0 flex justify-center">
+        <div className="absolute -top-3 inset-x-0 flex justify-center pointer-events-none">
           <span className="badge-blue">★ הכי פופולרי</span>
         </div>
       )}
       {isSignature && (
-        <div className="absolute -top-3 inset-x-0 flex justify-center">
-          <span className="badge-gold">★ Premium Tier</span>
+        <div className="absolute -top-3 inset-x-0 flex justify-center pointer-events-none">
+          <span className="badge-gold">★ הכי יוקרתי</span>
         </div>
       )}
 
-      {/* visual placeholder — render mock */}
       <div
+        aria-hidden="true"
         className="aspect-[5/3] rounded-xl mb-5 overflow-hidden border border-line relative"
         style={{
           background: isSignature
@@ -68,19 +64,17 @@ export default function PackageCard({ pkg, selected, recommended, onSelect }: Pr
         }}
       >
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-xs text-ink-secondary opacity-70 font-medium tracking-wider uppercase">
+          <div className="text-xs text-ink-secondary opacity-70 font-medium tracking-wider">
             {pkg.name}
           </div>
         </div>
       </div>
 
-      {/* name */}
       <div className="text-xs font-bold text-ink-secondary tracking-widest mb-1">
         {pkg.name}
       </div>
       <div className="text-xl font-bold text-ink-primary mb-4">{pkg.name_he}</div>
 
-      {/* price */}
       <div className="flex items-baseline gap-1 mb-5">
         <span className="text-3xl font-extrabold text-primary-500 tabular-nums">
           {formatILS(pkg.price_per_sqm)}
@@ -88,7 +82,6 @@ export default function PackageCard({ pkg, selected, recommended, onSelect }: Pr
         <span className="text-sm text-ink-secondary">/ מ״ר</span>
       </div>
 
-      {/* features */}
       <ul className="space-y-2 mb-6 flex-1">
         {(Object.keys(pkg.features) as (keyof Package["features"])[]).map((key) => (
           <li key={key} className="flex items-start gap-2 text-sm">
@@ -101,23 +94,19 @@ export default function PackageCard({ pkg, selected, recommended, onSelect }: Pr
         ))}
       </ul>
 
-      {/* CTA */}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onSelect(pkg.id);
-        }}
+      {/* Presentational pseudo-button — the whole card is the real button */}
+      <div
+        aria-hidden="true"
         className={[
-          "w-full py-3 rounded-lg font-semibold transition-all duration-200",
+          "w-full py-3 rounded-lg font-semibold text-center transition-all duration-200",
           selected
-            ? "bg-primary-500 text-white hover:bg-primary-600"
-            : "border border-line text-ink-primary hover:bg-surface-secondary hover:border-line-strong",
+            ? "bg-primary-500 text-white"
+            : "border border-line text-ink-primary",
         ].join(" ")}
       >
         {selected ? "✓ נבחר" : "בחר חבילה"}
-      </button>
-    </div>
+      </div>
+    </button>
   );
 }
 

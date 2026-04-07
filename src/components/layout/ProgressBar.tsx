@@ -1,6 +1,6 @@
-type Step = "auth" | "packages" | "configure" | "checkout" | "success";
+import type { FunnelStep } from "@/lib/types";
 
-const STEPS: { key: Step; label: string }[] = [
+const STEPS: { key: FunnelStep; label: string }[] = [
   { key: "auth", label: "אימות" },
   { key: "packages", label: "חבילה" },
   { key: "configure", label: "פרטים" },
@@ -8,15 +8,18 @@ const STEPS: { key: Step; label: string }[] = [
   { key: "success", label: "אישור" },
 ];
 
-export default function ProgressBar({ current }: { current: Step }) {
+export default function ProgressBar({ current }: { current: FunnelStep }) {
   const currentIdx = STEPS.findIndex((s) => s.key === current);
 
   return (
     <div className="container-prose py-6">
       <div className="flex items-center justify-between gap-2 max-w-2xl mx-auto">
         {STEPS.map((s, idx) => {
-          const done = idx < currentIdx;
-          const active = idx === currentIdx;
+          // Treat the final step as "done" when it's the current step,
+          // so /success shows a checkmark instead of "5".
+          const isLast = idx === STEPS.length - 1;
+          const done = idx < currentIdx || (isLast && idx === currentIdx);
+          const active = idx === currentIdx && !done;
 
           return (
             <div key={s.key} className="flex items-center flex-1 last:flex-none">

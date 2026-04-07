@@ -4,6 +4,16 @@ import Footer from "@/components/layout/Footer";
 import Reveal from "@/components/ui/Reveal";
 import CountUp from "@/components/ui/CountUp";
 import Countdown from "@/components/ui/Countdown";
+import { PACKAGES } from "@/lib/packages";
+import { formatILS } from "@/lib/pricing";
+import type { PackageId } from "@/lib/types";
+
+const RECOMMENDED_PACKAGE: PackageId = "classic";
+
+// Display order for the landing-page preview row.
+// Note: this differs from the configurator's anchor-pricing order — here
+// we show the price ladder ascending so the user can scan rate first.
+const PREVIEW_ORDER: PackageId[] = ["essential", "classic", "premium", "signature"];
 
 // 14-day discount window — אם רוצה לרענן, החלף את התאריך
 const DISCOUNT_DEADLINE = "2026-04-21T23:59:59+03:00";
@@ -66,15 +76,15 @@ function Hero() {
         <Reveal immediate>
           <span className="badge-gold mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-gold-500 me-1" />
-            The Tesla Model for Office Fit-Out
+            פלטפורמת קונפיגורטור ראשונה בישראל
           </span>
         </Reveal>
 
         <Reveal immediate delay={0.1}>
-          <h1 className="text-display-sm sm:text-display lg:text-display-lg text-ink-primary tracking-tight mb-6">
+          <h1 className="text-display-sm sm:text-display text-ink-primary tracking-tight mb-6 leading-[1.05]">
             המשרד שלך,
             <br />
-            <span className="text-primary-500">מוכן להזמנה.</span>
+            <span className="text-primary-500">מוכן להזמנה</span>
           </h1>
         </Reveal>
 
@@ -252,12 +262,9 @@ function HowItWorks() {
 /* ─────────────────────────── PACKAGES PREVIEW ─────────────────────────── */
 
 function PackagesPreview() {
-  const packages = [
-    { id: "essential", name: "ESSENTIAL", he: "אסנשיאל", price: "3,000", badge: null },
-    { id: "classic", name: "CLASSIC", he: "קלאסיק", price: "3,500", badge: "הכי פופולרי" },
-    { id: "premium", name: "PREMIUM", he: "פרימיום", price: "4,000", badge: null },
-    { id: "signature", name: "SIGNATURE", he: "סיגנצ׳ר", price: "5,000", badge: null },
-  ];
+  const packages = PREVIEW_ORDER.map(
+    (id) => PACKAGES.find((p) => p.id === id)!
+  );
   return (
     <section className="py-24 bg-surface-secondary border-y border-line">
       <div className="container-prose">
@@ -274,32 +281,34 @@ function PackagesPreview() {
         </Reveal>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {packages.map((p, i) => (
-            <Reveal key={p.id} delay={i * 0.07}>
-              <div
-                className={`card card-hover p-6 relative h-full ${
-                  p.badge ? "border-2 border-primary-500" : ""
-                }`}
-              >
-                {p.badge && (
-                  <div className="absolute -top-3 inset-x-0 flex justify-center">
-                    <span className="badge-gold">{p.badge}</span>
+          {packages.map((p, i) => {
+            const recommended = p.id === RECOMMENDED_PACKAGE;
+            return (
+              <Reveal key={p.id} delay={i * 0.07}>
+                <div
+                  className={`card card-hover p-6 relative h-full ${
+                    recommended ? "border-2 border-primary-500" : ""
+                  }`}
+                >
+                  {recommended && (
+                    <div className="absolute -top-3 inset-x-0 flex justify-center">
+                      <span className="badge-blue">★ הכי פופולרי</span>
+                    </div>
+                  )}
+                  <div className="text-xs font-bold text-ink-secondary tracking-widest mb-2">
+                    {p.name}
                   </div>
-                )}
-                <div className="text-xs font-bold text-ink-secondary tracking-widest mb-2">
-                  {p.name}
+                  <div className="text-lg font-bold text-ink-primary mb-4">{p.name_he}</div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-extrabold text-primary-500 tabular-nums">
+                      {formatILS(p.price_per_sqm)}
+                    </span>
+                    <span className="text-sm text-ink-secondary">/ מ״ר</span>
+                  </div>
                 </div>
-                <div className="text-lg font-bold text-ink-primary mb-4">{p.he}</div>
-                <div className="flex items-baseline gap-1 mb-4">
-                  <span className="text-3xl font-extrabold text-primary-500 tabular-nums">
-                    ₪{p.price}
-                  </span>
-                  <span className="text-xs text-ink-secondary">/ מ״ר</span>
-                </div>
-                <div className="text-xs text-ink-secondary">החל מ-‎₪{p.price}/מ״ר</div>
-              </div>
-            </Reveal>
-          ))}
+              </Reveal>
+            );
+          })}
         </div>
 
         <Reveal delay={0.3}>
@@ -407,9 +416,12 @@ function Faq() {
           {items.map((it, i) => (
             <Reveal key={it.q} delay={i * 0.05}>
               <details className="group card p-6 cursor-pointer open:border-primary-500 open:shadow-card transition-all">
-                <summary className="flex items-center justify-between gap-4 list-none">
+                <summary className="flex items-center justify-between gap-4 list-none rounded outline-none focus-visible:shadow-ring-blue">
                   <span className="text-base font-semibold text-ink-primary">{it.q}</span>
-                  <span className="text-primary-500 text-2xl group-open:rotate-45 transition-transform duration-300 leading-none">
+                  <span
+                    aria-hidden="true"
+                    className="text-primary-500 text-2xl group-open:rotate-45 transition-transform duration-300 leading-none"
+                  >
                     +
                   </span>
                 </summary>

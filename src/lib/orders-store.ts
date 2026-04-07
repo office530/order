@@ -1,5 +1,7 @@
 import "server-only";
 import type { Location, OrderStatus, PackageId } from "./types";
+import { supabaseAdmin, supabaseEnabled } from "./supabase/admin";
+import { DEPOSIT_AMOUNT } from "./pricing";
 
 export interface CreateOrderInput {
   phone: string;
@@ -83,24 +85,9 @@ const memoryStore: OrdersStore = {
 
 /* ────────────── Supabase backend ────────────── */
 
-function supabaseEnabled(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
-}
-
-async function supabaseAdmin() {
-  const { createClient } = await import("@supabase/supabase-js");
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
-
 const supabaseStore: OrdersStore = {
   async create(input) {
-    const sb = await supabaseAdmin();
+    const sb = supabaseAdmin();
 
     const { data: customer, error: customerErr } = await sb
       .from("customers")
@@ -129,7 +116,7 @@ const supabaseStore: OrdersStore = {
         location: input.location,
         floor: input.floor,
         estimated_price: input.estimatedPrice,
-        deposit_amount: 2000,
+        deposit_amount: DEPOSIT_AMOUNT,
       })
       .select()
       .single();
@@ -142,7 +129,7 @@ const supabaseStore: OrdersStore = {
   },
 
   async get(orderId) {
-    const sb = await supabaseAdmin();
+    const sb = supabaseAdmin();
     const { data: order } = await sb
       .from("orders")
       .select("*, customers(phone, name, email, company)")
@@ -173,7 +160,7 @@ const supabaseStore: OrdersStore = {
   },
 
   async list() {
-    const sb = await supabaseAdmin();
+    const sb = supabaseAdmin();
     const { data } = await sb
       .from("orders")
       .select("*, customers(phone, name, email, company)")
@@ -211,7 +198,7 @@ const supabaseStore: OrdersStore = {
   },
 
   async markPaid(orderId, paymentId) {
-    const sb = await supabaseAdmin();
+    const sb = supabaseAdmin();
     await sb
       .from("orders")
       .update({
