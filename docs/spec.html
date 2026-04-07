@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מסמך אפיון — פלטפורמת הזמנת עבודות גמר למשרדים</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafaf8;--surface:#fff;--text:#1a1a1a;--dim:#6b6b6b;--accent:#c8a96e;--accent2:#a08040;--border:#e5e5e0;--radius:10px}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:16px}
+
+/* Print */
+@media print{body{background:#fff;font-size:11pt}.no-print{display:none!important}.page-break{page-break-before:always}nav,.toc-sidebar{display:none!important}.container{max-width:100%;padding:0}section{box-shadow:none;border:none;padding:2em}}
+
+/* Layout */
+.container{max-width:860px;margin:0 auto;padding:20px}
+
+/* Cover */
+.cover{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px;background:linear-gradient(160deg,#1a1a1a 0%,#2d2520 50%,#1a1a1a 100%);color:#fff;border-radius:0 0 var(--radius) var(--radius);margin-bottom:40px;position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8a96e' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.cover h1{font-size:3em;font-weight:800;margin-bottom:16px;position:relative;letter-spacing:-0.5px}
+.cover .subtitle{font-size:1.3em;color:rgba(255,255,255,0.6);font-weight:300;margin-bottom:12px;position:relative}
+.cover .tagline{font-size:1em;color:var(--accent);font-style:italic;position:relative;margin-bottom:24px}
+.cover .date{font-size:0.85em;color:rgba(255,255,255,0.35);position:relative}
+
+/* Sections */
+section{background:var(--surface);border-radius:var(--radius);padding:48px;margin-bottom:24px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+h1.section-title{font-size:1.8em;font-weight:800;color:var(--text);margin-bottom:32px;padding-bottom:16px;border-bottom:3px solid var(--accent);display:inline-block}
+h2{font-size:1.35em;font-weight:700;color:var(--text);margin:32px 0 16px;padding-right:16px;border-right:4px solid var(--accent)}
+h3{font-size:1.1em;font-weight:600;color:#444;margin:24px 0 12px}
+
+p{margin-bottom:14px;color:#333}
+.quote{color:var(--dim);font-style:italic;padding:8px 16px;border-right:3px solid var(--border);margin:12px 0}
+
+/* Lists */
+ul,ol{padding-right:24px;margin-bottom:16px}
+li{margin-bottom:8px;line-height:1.7}
+li strong{color:var(--text)}
+
+/* Table */
+.table-wrap{overflow-x:auto;margin:20px 0}
+table{width:100%;border-collapse:collapse;font-size:0.92em}
+thead th{background:#1a1a1a;color:#fff;padding:12px 14px;font-weight:600;text-align:center;font-size:0.95em;letter-spacing:0.5px}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border);text-align:center;vertical-align:middle}
+tbody tr:hover{background:#faf8f4}
+tbody tr td:first-child{font-weight:600;background:#fffbf5}
+.highlight-col{background:#fffbf5}
+
+/* Badges */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.8em;font-weight:600}
+.badge-gold{background:#fef3cd;color:#856404}
+
+/* Divider */
+.divider{height:1px;background:var(--border);margin:32px 0}
+
+/* Flow */
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0;direction:rtl}
+.flow-step{background:#f4f1eb;padding:6px 14px;border-radius:20px;font-size:0.85em;font-weight:500;white-space:nowrap}
+.flow-arrow{color:var(--accent);font-weight:bold;font-size:1.1em}
+
+/* KPI Grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:20px 0}
+.kpi-card{background:#faf8f4;border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+.kpi-card .value{font-size:1.6em;font-weight:800;color:var(--accent2)}
+.kpi-card .label{font-size:0.82em;color:var(--dim);margin-top:4px}
+
+/* Footer */
+.footer{text-align:center;padding:40px;color:var(--dim);font-size:0.85em;border-top:2px solid var(--accent)}
+
+/* TOC */
+.toc{columns:2;column-gap:32px}
+.toc a{display:block;padding:6px 0;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);transition:color 0.2s}
+.toc a:hover{color:var(--accent)}
+.toc a span{color:var(--dim);font-size:0.85em}
+
+@media(max-width:700px){
+  .cover h1{font-size:2em}
+  section{padding:28px 20px}
+  .toc{columns:1}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <h1>מסמך אפיון מערכת</h1>
+  <div class="subtitle">פלטפורמת הזמנת עבודות גמר למשרדים אונליין</div>
+  <div class="tagline">"The Tesla Model for Office Fit-Out"</div>
+  <div class="date">גרסה פנימית · אפריל 2026</div>
+</div>
+
+<div class="container">
+
+<!-- TOC -->
+<section>
+  <h1 class="section-title">תוכן עניינים</h1>
+  <div class="toc">
+    <a href="#p1"><span>01</span> הרעיון האסטרטגי</a>
+    <a href="#p2"><span>02</span> מסע לקוח מלא</a>
+    <a href="#p3"><span>03</span> בניית אמון</a>
+    <a href="#p4"><span>04</span> עקרונות עיצוב</a>
+    <a href="#p5"><span>05</span> הגנה מפני העתקות וטכנולוגיה</a>
+    <a href="#p6"><span>06</span> תרשימי זרימה</a>
+    <a href="#p7"><span>07</span> מסרים שיווקיים</a>
+    <a href="#p8"><span>08</span> מדדים למעקב</a>
+  </div>
+</section>
+
+<!-- PART 1 -->
+<section id="p1" class="page-break">
+  <h1 class="section-title">חלק 1: הרעיון האסטרטגי</h1>
+
+  <h2>מה הבעיה בשוק</h2>
+  <p>כל הקבלנים היום משווקים באותו אופן: צילומי אתרים, תמונות פרויקטים, הבטחות כלליות. הלקוח צריך להתחיל לחפש קבלן, לבקש הצעות מחיר, להשוות, להחליט – תהליך שלוקח שבועות.</p>
+
+  <h2>מה אנחנו משנים</h2>
+  <p>הופכים עבודות גמר למשרדים למוצר שאפשר להזמין אונליין. הלקוח רואה מפרט, בוחר חבילה, רואה מחיר בזמן אמת, משלם מקדמה קטנה – ומתחיל תהליך מחייב.</p>
+
+  <h2>למה זה עובד</h2>
+  <ul>
+    <li><strong>הבידול המרכזי:</strong> אף מתחרה לא נותן ללקוח לראות מראש מה הוא מקבל לפני שהוא משלם. אנחנו הראשונים שנותנים לו.</li>
+    <li><strong>ההשראה מטסלה:</strong> לקוח נכנס, בוחר דגם, רואה מחיר ומפרט, משלם מקדמה קטנה על עסקה גדולה – בלי פגישה פיזית.</li>
+    <li><strong>יתרון פסיכולוגי:</strong> מקדמה של 2,000 שקלים על עסקה של 300K–500K יוצרת מחויבות רגשית. הלקוח כבר שילם, וזה מקל עליו להמשיך.</li>
+  </ul>
+</section>
+
+<!-- PART 2 -->
+<section id="p2" class="page-break">
+  <h1 class="section-title">חלק 2: מסע לקוח מלא – שלב אחר שלב</h1>
+
+  <h2>שלב 1: דף נחיתה – ההבטחה</h2>
+  <h3>מה רואים</h3>
+  <p>כותרת ראשית חזקה עם Hero Video של משרד מושלם. טקסט מרכזי אחד:</p>
+  <p class="quote">"המשרד שלך, מוכן להזמנה. בחר חבילה, ראה מפרט, שלם מקדמה – ואנחנו נעשה את השאר."</p>
+
+  <h3>אלמנטים מרכזיים בדף</h3>
+  <ul>
+    <li><strong>שלוש מספרים גדולים:</strong> כמה פרויקטים בוצעו (Social Proof), שטח כולל שטופל, לוח זמנים ממוצע</li>
+    <li><strong>הנעת פעולה (CTA):</strong> "בחר את המשרד שלך" – כפתור גדול, בולט וברור</li>
+    <li><strong>הטבה למזמינים אונליין:</strong> "30,000 שקלים הנחה למזמינים דרך האתר" – בנר נושר בראש הדף</li>
+    <li><strong>טיימר דחיפות:</strong> "ההטבה תקפה בעוד 14 ימים" – יוצר דחיפות</li>
+  </ul>
+
+  <h3>ניסוח שיווקי לדף הנחיתה</h3>
+  <p>הכותרת הראשית צריכה לעשות שלושה דברים: לגרום סקרנות, לייצר אמון מיידי, ולהוביל לפעולה. דוגמאות למסרים:</p>
+  <p class="quote">"איך נראה המשרד שלך בעוד 3 חודשים?"</p>
+  <p class="quote">"בחר רמת גימור, ראה מפרט, קבל מחיר מיידי"</p>
+  <p class="quote">"מצטרף? 2,000 שקלים שומרים לך את המקום – ואנחנו עושים את השאר"</p>
+
+  <div class="divider"></div>
+
+  <h2>שלב 2: אימות טלפון – השער למערכת</h2>
+  <h3>למה אימות טלפון ולא אימייל</h3>
+  <ul>
+    <li>טלפון הוא מזהה יותר אישי – מי שמשאיר את המספר שלו הוא אדם אמיתי</li>
+    <li>חוסם מתחרים מלהעתיק מספרי טלפון פיקטיביים</li>
+    <li>מאפשר לשלוח SMS למטרות שיווק בהמשך</li>
+    <li>יוצר "רשימת לידים" – מי שהזין טלפון הוא ליד אמיתי</li>
+  </ul>
+
+  <h3>איך מיישמים טכנית</h3>
+  <p>הלקוח מזין מספר טלפון. נשלח OTP ב-SMS (קוד חד פעמי ל-5 דקות). הלקוח מזין את הקוד ונכנס למערכת. ספקי שירות: Twilio או ספק SMS ישראלי כמו 019 / InforuMobile.</p>
+
+  <h3>הגנה מפני מתחרים</h3>
+  <ul>
+    <li><strong>Rate Limiting:</strong> מקסימום 3 ניסיונות קוד למספר אחד בשעה</li>
+    <li><strong>חסימת IP:</strong> חסימת גישות חוזרות מאותו IP</li>
+    <li><strong>מניעת צילום מסך:</strong> CSS שמונע צילום מסך + חתימת מים על תמונות</li>
+    <li><strong>תוכן דינמי:</strong> המפרטים והמחירים נטענים משרת ולא קבועים ב-HTML – אין מה להעתיק</li>
+  </ul>
+
+  <div class="divider"></div>
+
+  <h2>שלב 3: בחירת חבילה – הלב של המערכת</h2>
+  <h3>ארבע רמות גימור</h3>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>SIGNATURE</th><th>PREMIUM</th><th>CLASSIC</th><th>ESSENTIAL</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="highlight-col"><strong>₪5,000 / מ״ר</strong></td><td><strong>₪4,000 / מ״ר</strong></td><td><strong>₪3,500 / מ״ר</strong></td><td><strong>₪3,000 / מ״ר</strong></td></tr>
+      <tr><td class="highlight-col">עיצוב אדריכלי מלא</td><td>עיצוב אדריכלי בסיסי</td><td>תכנון פנימי</td><td>תכנון סטנדרטי</td></tr>
+      <tr><td class="highlight-col">חומרים ברמה גבוהה</td><td>חומרים ברמה בינונית</td><td>חומרים איכותיים</td><td>חומרים סטנדרטיים</td></tr>
+      <tr><td class="highlight-col">תאורה מעצבת</td><td>תאורה מעצבת</td><td>תאורה סטנדרטית</td><td>תאורה בסיסית</td></tr>
+      <tr><td class="highlight-col">חלוקה פנימית מלאה</td><td>חלוקה פנימית</td><td>חלוקה פנימית</td><td>ללא חלוקה</td></tr>
+      <tr><td class="highlight-col">מערכות מלאות</td><td>מערכות מלאות</td><td>מערכות חלקיות</td><td>מערכות בסיסיות</td></tr>
+      <tr><td class="highlight-col">אחריות 24 חודש</td><td>אחריות 18 חודש</td><td>אחריות 12 חודש</td><td>אחריות 12 חודש</td></tr>
+      <tr><td class="highlight-col">מנהל פרויקט צמוד</td><td>מנהל פרויקט צמוד</td><td>ליווי פרויקט</td><td>ליווי פרויקט</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>אסטרטגיית תמחור</h3>
+  <ul>
+    <li><strong>חבילה מומלצת (CLASSIC):</strong> זו החבילה שתוצג "הכי פופולרית" – היא בעצם ה-Anchor.</li>
+    <li><strong>SIGNATURE בראש:</strong> תמיד להציג את החבילה היקרה קודם – זה ה-Anchor שמגדיר את הרצון לבחור את האמצעית.</li>
+    <li><strong>הדגשה ויזואלית:</strong> ליד כל חבילה 3–4 תמונות המחשה של משרד ברמה זו (renders/ויזואליזציות).</li>
+    <li><strong>לא לחשוף את המפרט:</strong> המפרט המלא נחשף רק אחרי שהלקוח בוחר חבילה – וגם אז רק בתוך המערכת, לא כקובץ PDF.</li>
+  </ul>
+
+  <h3>מה כוללת כל חבילה – פירוט לקוח</h3>
+  <p>לכל חבילה להציג רשימה ברורה של מה כולל:</p>
+  <ul>
+    <li>רצפות – סוג (פורצלן/גרניט/עץ), גובה</li>
+    <li>תקרות – סוג (גבס/צבע/טפט)</li>
+    <li>חלוקה פנימית – גבס/זכוכית/מלאה</li>
+    <li>תאורה – סוג (שקוע/LED/מעצב)</li>
+    <li>מערכות – חשמל/מיזוג/כבאי אש/אינסטלציות</li>
+    <li>ניהול פרויקט – מנהל/ליווי/אחריות</li>
+  </ul>
+
+  <div class="divider"></div>
+
+  <h2>שלב 4: הזנת פרטי המשרד</h2>
+  <p>אחרי בחירת חבילה, הלקוח מזין 3–4 פרטים:</p>
+  <ol>
+    <li><strong>שטח המשרד:</strong> הלקוח מזין שטח במ״ר ברוטו. המערכת מחשבת מחיר משוער בזמן אמת.</li>
+    <li><strong>מיקום:</strong> הלקוח בוחר אזור (מרכז/שרון/צפון). יכול להשפיע על מחיר ולוגיסטיקה.</li>
+    <li><strong>קומה נוכחית:</strong> הלקוח בוחר קומה מועדפת.</li>
+    <li><strong>שם החברה/איש קשר:</strong> פרטים להסכם.</li>
+  </ol>
+
+  <h3>חישוב מחיר בזמן אמת</h3>
+  <p>ברגע שהלקוח מזין שטח, המערכת מחשבת בזמן אמת הערכה משוערת של הפרויקט. זה כולל אנימציה עם סרגל שעולה ומראה את המחיר המשוער באופן ברור:</p>
+  <p class="quote">דוגמה: "המשרד שלך: 200 מ״ר | חבילה CLASSIC | אזור מרכז | מחיר משוער: ₪700,000 | זמן ביצוע משוער: 45–60 יום"</p>
+
+  <div class="divider"></div>
+
+  <h2>שלב 5: דף סיכום – בניית אמון</h2>
+  <h3>אלמנטי אמון בדף</h3>
+  <ul>
+    <li><strong>סיכום המחיר:</strong> כותרת גדולה "מחיר משוער: ₪XXX,XXX" + מתחתיה בקטן "שריינו לך מקום עם מקדמה של ₪2,000"</li>
+    <li><strong>מה כלול:</strong> רשימה מקוצרת של החבילה + הפרטים שהלקוח הזין</li>
+    <li><strong>הטבה בולטת:</strong> "בהזמנה אונליין אתה חוסך ₪30,000" – מוצג כשורה חצויה עם המחיר המקורי והמחיר אחרי הנחה</li>
+    <li><strong>אחריות:</strong> "12 חודשי אחריות על עבודות הגמר" – מוריד סיכון</li>
+    <li><strong>החזר כספי:</strong> "2,000 שקלים מקדמה בלבד. אם לא מתקדם – החזר מלא"</li>
+    <li><strong>Social Proof:</strong> "85 לקוחות הזמינו החודש" / "דירוג 4.9 מתוך 126 פרויקטים"</li>
+  </ul>
+
+  <h3>ספק סליקה</h3>
+  <p>לשלב המקדמה של 2,000 שקלים אפשר להשתמש בספקים כמו:</p>
+  <ul>
+    <li><strong>Meshulam / CardCom:</strong> ספקי סליקה ישראליים עם API פשוט. אפשר להטמיע דף סליקה בעיצוב המותג אישית.</li>
+    <li><strong>Stripe:</strong> אם רוצים אופציה בינלאומית – תמיכה טובה בישראל.</li>
+    <li><strong>העברה בנקאית:</strong> אם רוצים להימנע מסליקה – אפשר להפנות לדף העברה בנקאית ולסלוק באופן ידני.</li>
+  </ul>
+
+  <div class="divider"></div>
+
+  <h2>שלב 6: אחרי סליקה – הסכם התקשרות</h2>
+  <h3>התרחשות מיידית אחרי תשלום</h3>
+  <ol>
+    <li><strong>מייד אחרי סליקה:</strong> הלקוח מקבל אימייל עם אישור הזמנה + חשבונית ולינק להסכם התקשרות.</li>
+    <li><strong>הסכם התקשרות דיגיטלי:</strong> הלקוח פותח את ההסכם, קורא אותו, ומאשר בחתימה דיגיטלית. אפשר להשתמש ב-DocuSign או PandaDoc.</li>
+    <li><strong>קביעת פגישת אפיון:</strong> אחרי אישור ההסכם, המערכת מציעה אוטומטית לינק לקביעת פגישה בקלנדלי.</li>
+    <li><strong>פגישת אפיון:</strong> פגישה פיזית במשרד הלקוח. רק אחרי פגישה זו מתחיל התהליך בפועל.</li>
+  </ol>
+
+  <h3>מה כולל ההסכם</h3>
+  <p>ההסכם צריך להיות קצר וברור – זה לא חוזה מלא, אלא הסכם מקדמה. הוא כולל:</p>
+  <ul>
+    <li>תיאור החבילה והמפרט שנבחר</li>
+    <li>סכום מקדמה של 2,000 שקלים + תנאי החזר ברורים</li>
+    <li>לוח זמנים משוער לביצוע</li>
+    <li>תנאי ביטול: המקדמה מוחזרת מלאה אם לא מתקדם תוך 30 יום</li>
+    <li>פגישה ראשונה תוך 7 ימי עסקים</li>
+    <li>סעיף שקובע "מה כולל המקדמה" – מוריד חרדה</li>
+  </ul>
+</section>
+
+<!-- PART 3 -->
+<section id="p3" class="page-break">
+  <h1 class="section-title">חלק 3: בניית אמון – איך גורמים למישהו לקנות</h1>
+
+  <h2>הבעיה: "למה שאקנה ממותג לא מוכר?"</h2>
+  <p>זו השאלה הכי קריטית. התשובה היא לא להשתוות לטסלה, אלא להוריד סיכון. אלה השכבות:</p>
+
+  <h3>1. המקדמה היא נמוכה – לא העסקה</h3>
+  <p>2,000 שקלים על עסקה של 300K–500K זה 0.5%–0.7% – סכום שכל לקוח רציני יכול לשלם בלי לחשוב פעמיים. והוא מוחזר מלא אם לא מתקדם.</p>
+
+  <h3>2. מספרים שמוכיחים אמינות</h3>
+  <ul>
+    <li><strong>מספר פרויקטים:</strong> "126 פרויקטים הושלמו בהצלחה" – מספר גדול יוצר אמון</li>
+    <li><strong>שטח כולל:</strong> "220,000 מ״ר בוצעו" – היקף מוכיח אמינות</li>
+    <li><strong>לוגואים של לקוחות מוכרים:</strong> אם יש פרויקט מוכר (Cyber Engineering/Microsoft) – להציג לוגו והמלצה</li>
+    <li><strong>וידאו טסטימוניאל:</strong> סרטונים קצרים (30–45 שניות) של לקוחות מספרים על החוויה</li>
+  </ul>
+
+  <h3>3. גלריית פרויקטים חיה</h3>
+  <p>סקציה בדף שמציגה 4–6 פרויקטים מושלמים עם תמונות לפני ואחרי. לכל פרויקט: שם הלקוח, שטח, זמן ביצוע, רמת גימור.</p>
+
+  <h3>4. הבטחה זו לא Commitment</h3>
+  <p>המסר השיווקי המרכזי של המקדמה: "זו לא התחייבות. זו שריינת מקום. אם לא מתקדם – הכסף חוזר." זה מוריד את החרדה לאפס.</p>
+
+  <h3>5. תהליך שקוף – לא הכל</h3>
+  <p>הלקוח לא קונה את כל המשרד באונליין. הוא משלם מקדמה קטנה ומקבל מפרט ומחיר משוער. האפיון האמיתי, התכנון המפורט, החוזה הסופי – כל אלה קורים בפגישה הפיזית.</p>
+</section>
+
+<!-- PART 4 -->
+<section id="p4" class="page-break">
+  <h1 class="section-title">חלק 4: עקרונות עיצוב</h1>
+
+  <h2>הנחיה ויזואלית</h2>
+  <ul>
+    <li><strong>מינימליזם כהה, לא Wix:</strong> עיצוב נקי עם הרבה מרחב לבן. רקע כהה עם פסי בודד, צבעים שחור/זהב/בז, קווים נקיים.</li>
+    <li><strong>Mobile First:</strong> רוב הלקוחות יגיעו מהטלפון. העיצוב חייב להיות מושלם במובייל.</li>
+    <li><strong>תמונות איכותיות:</strong> הדמיות/רנדרים של משרדים אמיתיים שעשיתם. אל תשתמש בתמונות סטוק.</li>
+    <li><strong>אנימציות עדינות:</strong> מעברים בין שלבים עם אנימציות עדינות שמרגישות התקדמות.</li>
+  </ul>
+
+  <h2>השראת הדף</h2>
+  <p>הדף לא מסתיים ב-"Click here". הוא חוויה. כמו לבחור רכב בטסלה – אתה גולל למטה, בוחר צבע, רואה איך זה נראה, ממשיך לשלב הבא. התחושה של הדף צריכה להיות זהה.</p>
+
+  <h2>מבנה הדפים</h2>
+  <ol>
+    <li><strong>דף נחיתה (Hero):</strong> וידאו/תמונה + מסר מרכזי + CTA + הטבה</li>
+    <li><strong>אימות טלפון:</strong> OTP פשוט ומהיר</li>
+    <li><strong>בחירת חבילה:</strong> 4 כרטיסים זה ליד זה עם תמונות</li>
+    <li><strong>מפרט חבילה:</strong> נחשף רק אחרי בחירה</li>
+    <li><strong>פרטי המשרד:</strong> שטח, מיקום, קומה</li>
+    <li><strong>סיכום ומחיר:</strong> דף סליקה עם מחיר סופי + הטבה</li>
+    <li><strong>אישור + הסכם:</strong> אימייל + חשבונית</li>
+    <li><strong>Thank You:</strong> עמוד תודה + מה קורה עכשיו</li>
+  </ol>
+</section>
+
+<!-- PART 5 -->
+<section id="p5" class="page-break">
+  <h1 class="section-title">חלק 5: הגנה מפני העתקות וטכנולוגיה</h1>
+
+  <h2>הגנה על התוכן</h2>
+  <ul>
+    <li><strong>אימות טלפון:</strong> שום מפרט/מחיר לא נחשף ללא אימות</li>
+    <li><strong>תוכן דינמי:</strong> המפרטים והמחירים נטענים משרת בזמן אמת – לא קבועים ב-HTML ולא ניתנים להעתקה דרך scraping</li>
+    <li><strong>חסימת צילום מסך:</strong> CSS שמונע צילום מסך + חתימת מים על תמונות</li>
+    <li><strong>Rate Limiting:</strong> הגבלת מספר הכניסות למערכת מאותו IP</li>
+    <li><strong>Session:</strong> כל Session פעיל ל-30 דקות – אחרי כן צריך להתחבר מחדש</li>
+  </ul>
+
+  <h2>הגנה על המודל העסקי</h2>
+  <p>גם אם מתחרה יעתיק את הרעיון, היתרון שלך הוא הביצוע:</p>
+  <ul>
+    <li>האתר הוא רק הוויטרינה – הערך הוא ביכולת לספק את השירות באמת</li>
+    <li>אתה הראשון שעושה את זה בשוק – ה-First Mover Advantage שווה הרבה</li>
+    <li>המוניטין האמיתי הוא המוניטין שלך – אם מישהו מעתיק, אתה כבר עם דאטה ומוניטין</li>
+    <li>הברנד נבנה סביב החוויה – האתר הוא רק חלק אחד</li>
+  </ul>
+
+  <h2>מערך טכנולוגי מומלץ</h2>
+  <ul>
+    <li><strong>Frontend:</strong> React / Next.js – מאפשר SSR, ביצועים טובים, מהירות טעינה</li>
+    <li><strong>Backend:</strong> Node.js / Supabase – אימות, דאטהבייס, לוגיקה עסקית</li>
+    <li><strong>סליקה:</strong> Meshulam / CardCom / Stripe – עם דף סליקה מוטמע בעיצוב שלך</li>
+    <li><strong>SMS/OTP:</strong> Twilio / 019 / InforuMobile</li>
+    <li><strong>חתימות דיגיטליות:</strong> DocuSign / PandaDoc</li>
+    <li><strong>CRM:</strong> Monday / HubSpot – מעקב אוטומטי אחרי לידים</li>
+  </ul>
+</section>
+
+<!-- PART 6 -->
+<section id="p6" class="page-break">
+  <h1 class="section-title">חלק 6: תרשימי זרימה</h1>
+
+  <h2>תרחיש מסע לקוח מלא</h2>
+  <div class="flow">
+    <span class="flow-step">קמפיין</span><span class="flow-arrow">←</span>
+    <span class="flow-step">דף נחיתה</span><span class="flow-arrow">←</span>
+    <span class="flow-step">אימות טלפון (OTP)</span><span class="flow-arrow">←</span>
+    <span class="flow-step">בחירת חבילה</span><span class="flow-arrow">←</span>
+    <span class="flow-step">צפייה במפרט</span><span class="flow-arrow">←</span>
+    <span class="flow-step">הזנת פרטי משרד</span><span class="flow-arrow">←</span>
+    <span class="flow-step">דף סיכום</span><span class="flow-arrow">←</span>
+    <span class="flow-step">סליקת מקדמה (₪2,000)</span><span class="flow-arrow">←</span>
+    <span class="flow-step">אימייל אישור + הסכם</span><span class="flow-arrow">←</span>
+    <span class="flow-step">חתימה דיגיטלית</span><span class="flow-arrow">←</span>
+    <span class="flow-step">פגישת אפיון</span><span class="flow-arrow">←</span>
+    <span class="flow-step">התחלת פרויקט</span>
+  </div>
+
+  <h2>תרחיש ביטול הזמנה</h2>
+  <div class="flow">
+    <span class="flow-step">לקוח לא התקדם תוך 30 יום</span><span class="flow-arrow">←</span>
+    <span class="flow-step">תזכורת אוטומטית (SMS + אימייל)</span><span class="flow-arrow">←</span>
+    <span class="flow-step">לא התקדם עדיין</span><span class="flow-arrow">←</span>
+    <span class="flow-step">החזר מלא אוטומטי</span><span class="flow-arrow">←</span>
+    <span class="flow-step">סגירת הזמנה</span>
+  </div>
+</section>
+
+<!-- PART 7 -->
+<section id="p7" class="page-break">
+  <h1 class="section-title">חלק 7: מסרים שיווקיים</h1>
+
+  <h2>מסרים לקמפיינים</h2>
+
+  <h3>מסר ראשי</h3>
+  <p><strong style="font-size:1.2em">"המשרד שלך, מוכן להזמנה."</strong></p>
+  <p>פעם ראשונה בישראל אפשר לבחור חבילת גמר למשרד, לראות מפרט, לקבל מחיר – ולשריין מקום אונליין.</p>
+
+  <h3>מסר שני</h3>
+  <p><strong style="font-size:1.2em">"למה לחכות שבועות להצעת מחיר?"</strong></p>
+  <p>בחר חבילה, ראה מפרט, קבל מחיר מיידי – תוך 3 דקות. הנחה ₪30,000 למזמינים אונליין.</p>
+
+  <h3>מסר לריטרגטינג</h3>
+  <p><strong style="font-size:1.2em">"המשרד שלך עדיין מחכה לך"</strong></p>
+  <p>חזרו לסיים את ההזמנה. ההטבה תקפה בעוד 14 ימים.</p>
+
+  <h2>קהל יעד</h2>
+  <ul>
+    <li><strong>Facebook/Instagram:</strong> קרוסלות לפני/אחרי של משרדים + וידאו קצר של "איך זה עובד"</li>
+    <li><strong>Google Ads:</strong> מילות כמו "שיפוץ משרד", "עיצוב משרדים", "עבודות גמר למשרדים"</li>
+    <li><strong>LinkedIn:</strong> למנהלי נכסים, COOs, מנהלי אדמיניסטרציה של חברות</li>
+  </ul>
+</section>
+
+<!-- PART 8 -->
+<section id="p8" class="page-break">
+  <h1 class="section-title">חלק 8: מדדים למעקב</h1>
+
+  <h2>KPIs מרכזיים</h2>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>מדד</th><th>יעד התחלתי</th><th>יעד אופטימי</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>המרה לאימות</strong></td><td>20%</td><td>35%</td></tr>
+      <tr><td><strong>אימות לבחירת חבילה</strong></td><td>60%</td><td>80%</td></tr>
+      <tr><td><strong>בחירה לסליקה</strong></td><td>8%</td><td>15%</td></tr>
+      <tr><td><strong>עלות לליד (CPL)</strong></td><td>₪250</td><td>₪150</td></tr>
+      <tr><td><strong>זמן במערכת</strong></td><td>4 דקות</td><td>2.5 דקות</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>מדדי תוצאה</h2>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="value">8%</div><div class="label">שיעור המרה לסליקה (יעד)</div></div>
+    <div class="kpi-card"><div class="value">₪150</div><div class="label">עלות לליד (יעד)</div></div>
+    <div class="kpi-card"><div class="value">2.5 דק׳</div><div class="label">זמן ממוצע במערכת</div></div>
+    <div class="kpi-card"><div class="value">35%</div><div class="label">המרה לאימות (יעד)</div></div>
+  </div>
+
+  <h2>שלבים הבאים</h2>
+  <ul>
+    <li><strong>שלב 1 – הקמה (2–4 שבועות):</strong> בניית האתר + עיצוב + חיבור סליקה + חיבור OTP + הסכם</li>
+    <li><strong>שלב 2 – בדיקה (2 שבועות):</strong> טסט פנימי עם 20–30 אנשים בלי קמפיין</li>
+    <li><strong>שלב 3 – השקה (מתמשך):</strong> קמפיינים ממומנים + אופטימיזציה + מעקב דאטה</li>
+  </ul>
+</section>
+
+<!-- FOOTER -->
+<div class="footer">
+  — סוף מסמך אפיון —
+</div>
+
+</div>
+</body>
+</html>
