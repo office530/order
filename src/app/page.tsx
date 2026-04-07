@@ -4,6 +4,7 @@ import Footer from "@/components/layout/Footer";
 import Reveal from "@/components/ui/Reveal";
 import CountUp from "@/components/ui/CountUp";
 import Countdown from "@/components/ui/Countdown";
+import HeroPreview from "@/components/home/HeroPreview";
 import { PACKAGES } from "@/lib/packages";
 import { formatILS } from "@/lib/pricing";
 import type { PackageId } from "@/lib/types";
@@ -115,48 +116,9 @@ function Hero() {
         </Reveal>
       </div>
 
-      {/* Mock product image — faux configurator preview */}
       <Reveal delay={0.5}>
         <div className="container-prose pb-20">
-          <div className="relative aspect-[16/9] rounded-3xl border border-line bg-surface-secondary overflow-hidden shadow-card">
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(135deg, #F8F9FC 0%, #EFF2F8 50%, #F8F9FC 100%)",
-              }}
-            />
-            <div className="absolute inset-0 flex">
-              <div className="hidden md:flex flex-col justify-center gap-3 w-72 p-8 bg-white border-s border-line">
-                <div className="select-card-active">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-sm font-semibold text-ink-primary">SIGNATURE</div>
-                      <div className="text-xs text-ink-secondary">‎₪5,000 / מ״ר</div>
-                    </div>
-                    <div className="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center text-white text-xs">
-                      ✓
-                    </div>
-                  </div>
-                </div>
-                <div className="select-card">
-                  <div className="text-sm font-semibold text-ink-primary">PREMIUM</div>
-                  <div className="text-xs text-ink-secondary">‎₪4,000 / מ״ר</div>
-                </div>
-                <div className="select-card">
-                  <div className="text-sm font-semibold text-ink-primary">CLASSIC</div>
-                  <div className="text-xs text-ink-secondary">‎₪3,500 / מ״ר</div>
-                </div>
-                <div className="select-card">
-                  <div className="text-sm font-semibold text-ink-primary">ESSENTIAL</div>
-                  <div className="text-xs text-ink-secondary">‎₪3,000 / מ״ר</div>
-                </div>
-              </div>
-              <div className="flex-1 flex items-center justify-center text-ink-secondary text-sm">
-                <span className="opacity-60">תצוגה מקדימה של הקונפיגורטור</span>
-              </div>
-            </div>
-          </div>
+          <HeroPreview />
         </div>
       </Reveal>
     </section>
