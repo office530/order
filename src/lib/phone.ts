@@ -39,3 +39,9 @@ export function maskPhone(canonical: string): string {
   if (!/^\d{10}$/.test(canonical)) return canonical;
   return `${canonical.slice(0, 3)}-***-${canonical.slice(6)}`;
 }
+
+/** Canonical "0501234567" → E.164 "+972501234567" (used by Twilio etc.) */
+export function toE164(canonical: string): string | null {
+  if (!/^0\d{9}$/.test(canonical)) return null;
+  return `+972${canonical.slice(1)}`;
+}

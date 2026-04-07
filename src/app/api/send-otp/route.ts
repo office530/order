@@ -7,6 +7,7 @@ import {
   OTP_RATE_LIMIT_WINDOW_MIN,
   OTP_TTL_MS,
 } from "@/lib/otp-store";
+import { sendOtpSms } from "@/lib/sms";
 
 export async function POST(request: Request) {
   let body: { phone?: string };
@@ -44,14 +45,21 @@ export async function POST(request: Request) {
 
   await store.create({ phone, code, expiresAt });
 
-  // TODO: integrate Twilio / InforuMobile in step 7. For now: console only.
-  // eslint-disable-next-line no-console
-  console.log(`[OTP] phone=${phone} code=${code} expires=${new Date(expiresAt).toISOString()}`);
+  // Dispatch via the active SMS provider (console / twilio / inforu).
+  // We don't fail the request if SMS fails — the user can resend.
+  const smsResult = await sendOtpSms(phone, code);
+  if (!smsResult.ok) {
+    // eslint-disable-next-line no-console
+    console.error(
+      `[send-otp] SMS failed via ${smsResult.provider}: ${smsResult.error}`
+    );
+  }
 
   return NextResponse.json({
     ok: true,
     expiresAt,
-    // Return code in dev only — never in production
+    provider: smsResult.provider,
+    // Only return the code in dev — never in production
     devCode: process.env.NODE_ENV !== "production" ? code : undefined,
   });
 }

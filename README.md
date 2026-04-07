@@ -14,14 +14,35 @@
 | --- | --- |
 | 1. הקמת פרויקט + מבנה + schema | ✅ הושלם |
 | 2. דף נחיתה (Hero) | ✅ הושלם |
-| 3. אימות OTP | 🔜 בקרוב |
-| 4. בחירת חבילה | 🔜 בקרוב |
-| 5. הזנת פרטים + חישוב מחיר | 🔜 בקרוב |
-| 6. סיכום + סליקה (mock) | 🔜 בקרוב |
-| 7. אינטגרציית SMS אמיתית | 🔜 בקרוב |
+| 3. אימות OTP | ✅ הושלם |
+| 4. בחירת חבילה | ✅ הושלם |
+| 5. הזנת פרטים + חישוב מחיר | ✅ הושלם |
+| 6. סיכום + סליקה (mock) | ✅ הושלם |
+| 7. אינטגרציית SMS (Inforu / Twilio) | ✅ הושלם |
 | 8. אינטגרציית סליקה אמיתית | 🔜 בקרוב |
 | 9. דשבורד אדמין | 🔜 בקרוב |
 | 10. Deploy ל-Vercel | 🔜 בקרוב |
+
+### חיבור SMS אמיתי (אופציונלי — עובד גם בלי)
+
+ברירת מחדל: ה-OTP מודפס ל-console של `npm run dev`. מספיק לפיתוח.
+לחיבור ספק אמיתי, מלא אחד מהשניים ב-`.env.local`:
+
+**InforuMobile (מומלץ לישראל):**
+```env
+INFORU_USERNAME=your_username
+INFORU_API_TOKEN=your_token
+INFORU_SENDER=RNVT
+```
+
+**Twilio (גלובלי):**
+```env
+TWILIO_ACCOUNT_SID=AC...
+TWILIO_AUTH_TOKEN=...
+TWILIO_PHONE_NUMBER=+1...
+```
+
+המערכת בוחרת ספק אוטומטית. אפשר גם לאלץ עם `SMS_PROVIDER=inforu|twilio|console`.
 
 המסמך המלא של האפיון נמצא ב-[`docs/spec.html`](./docs/spec.html).
 פרומפטים לבנייה הדרגתית עם Claude Code נמצאים ב-[`CLAUDE.md`](./CLAUDE.md).
