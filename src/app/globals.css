@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #131313;
+  --text: #ffffff;
+  --dim: #a3a3a3;
+  --accent: #c8a96e;
+  --accent-dark: #a08040;
+  --border: #262626;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-feature-settings: "kern", "liga", "calt";
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+@layer components {
+  .container-prose {
+    @apply max-w-6xl mx-auto px-6 sm:px-8;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full
+           bg-gold text-ink-900 font-semibold text-lg
+           transition-all duration-300
+           hover:bg-gold-light hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(200,169,110,0.4)]
+           active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
+           border border-white/20 text-white font-medium
+           transition-all duration-300
+           hover:border-gold hover:text-gold;
+  }
+
+  .card-dark {
+    @apply bg-ink-800 border border-ink-700 rounded-2xl;
+  }
+
+  .accent-line {
+    @apply inline-block w-12 h-px bg-gold align-middle me-3;
+  }
+}
