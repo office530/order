@@ -29,6 +29,7 @@ export interface OrderRecord extends CreateOrderInput {
 interface OrdersStore {
   create(input: CreateOrderInput): Promise<CreatedOrder>;
   get(orderId: string): Promise<OrderRecord | null>;
+  list(): Promise<OrderRecord[]>;
   markPaid(orderId: string, paymentId: string): Promise<void>;
 }
 
@@ -64,6 +65,10 @@ const memoryStore: OrdersStore = {
 
   async get(orderId) {
     return mem.orders.get(orderId) ?? null;
+  },
+
+  async list() {
+    return Array.from(mem.orders.values()).sort((a, b) => b.createdAt - a.createdAt);
   },
 
   async markPaid(orderId, paymentId) {
@@ -165,6 +170,44 @@ const supabaseStore: OrdersStore = {
       depositPaid: order.deposit_paid,
       paymentId: order.payment_id,
     };
+  },
+
+  async list() {
+    const sb = await supabaseAdmin();
+    const { data } = await sb
+      .from("orders")
+      .select("*, customers(phone, name, email, company)")
+      .order("created_at", { ascending: false })
+      .limit(500);
+
+    if (!data) return [];
+
+    return data.map((order) => {
+      const customer = order.customers as
+        | {
+            phone: string;
+            name: string | null;
+            email: string | null;
+            company: string | null;
+          }
+        | null;
+      return {
+        id: order.id,
+        createdAt: new Date(order.created_at).getTime(),
+        phone: customer?.phone ?? "",
+        packageId: order.package_id,
+        areaSqm: order.area_sqm,
+        location: order.location,
+        floor: order.floor,
+        estimatedPrice: order.estimated_price,
+        contactName: customer?.name ?? "",
+        contactEmail: customer?.email ?? "",
+        companyName: customer?.company ?? null,
+        status: order.status,
+        depositPaid: order.deposit_paid,
+        paymentId: order.payment_id,
+      };
+    });
   },
 
   async markPaid(orderId, paymentId) {
