@@ -8,7 +8,21 @@ export const metadata = {
   description: "סקור את סיכום ההזמנה ושריין את התור עם מקדמה ‎₪2,000.",
 };
 
-export default function CheckoutPage() {
+const ERROR_MESSAGES: Record<string, string> = {
+  cancelled: "הסליקה בוטלה. אפשר לנסות שוב כשתרצה.",
+  failed: "הסליקה לא הצליחה. בדוק את פרטי הכרטיס ונסה שוב.",
+  missing_order: "חסרים פרטי הזמנה. התחל מחדש.",
+};
+
+interface PageProps {
+  searchParams: { error?: string };
+}
+
+export default function CheckoutPage({ searchParams }: PageProps) {
+  const errorMessage = searchParams.error
+    ? ERROR_MESSAGES[searchParams.error] ?? "אירעה שגיאה. נסה שוב."
+    : null;
+
   return (
     <>
       <Header />
@@ -24,6 +38,14 @@ export default function CheckoutPage() {
             סקור את הפרטים, ושריין את התור עם מקדמה של ‎₪2,000.
           </p>
         </div>
+
+        {errorMessage && (
+          <div className="container-prose mb-6">
+            <div className="card p-4 border-danger/30 bg-danger/5 text-sm text-danger text-center">
+              {errorMessage}
+            </div>
+          </div>
+        )}
 
         <div className="container-prose">
           <CheckoutSummary />

@@ -19,7 +19,7 @@
 | 5. הזנת פרטים + חישוב מחיר | ✅ הושלם |
 | 6. סיכום + סליקה (mock) | ✅ הושלם |
 | 7. אינטגרציית SMS (Inforu / Twilio) | ✅ הושלם |
-| 8. אינטגרציית סליקה אמיתית | 🔜 בקרוב |
+| 8. אינטגרציית סליקה (Meshulam / CardCom) | ✅ הושלם |
 | 9. דשבורד אדמין | 🔜 בקרוב |
 | 10. Deploy ל-Vercel | 🔜 בקרוב |
 
@@ -43,6 +43,39 @@ TWILIO_PHONE_NUMBER=+1...
 ```
 
 המערכת בוחרת ספק אוטומטית. אפשר גם לאלץ עם `SMS_PROVIDER=inforu|twilio|console`.
+
+### חיבור סליקה אמיתית (אופציונלי — עובד גם בלי)
+
+ברירת מחדל: סליקה במצב **mock** — לחיצה על "שריין מקום" מסמנת את ההזמנה כשולמה
+מיידית ועוברת ל-`/success`. מספיק לפיתוח ולדמואים.
+
+לחיבור gateway אמיתי, מלא ב-`.env.local`:
+
+**Meshulam Grow:**
+```env
+MESHULAM_USER_ID=...
+MESHULAM_PAGE_CODE=...
+MESHULAM_API_KEY=...
+MESHULAM_TEST=1   # להסיר בפרודקשן
+```
+
+**CardCom (LowProfile v11):**
+```env
+CARDCOM_TERMINAL=...
+CARDCOM_USERNAME=...
+CARDCOM_API_PASSWORD=...
+```
+
+זרימה אמיתית: צד-לקוח קורא ל-`/api/payment/init` → השרת יוצר עמוד תשלום באתר הספק
+ומחזיר URL → הדפדפן מנותב לשם → לאחר התשלום הספק מבצע POST ל-`/api/payment` (webhook)
+ומחזיר את הלקוח ל-`/api/payment/return?order=...` שמוודא תשלום ומעביר ל-`/success`.
+
+חשוב להגדיר `NEXT_PUBLIC_SITE_URL` לכתובת חיצונית מלאה (כמו `https://order.rnvt.co.il`)
+כדי שה-return וה-webhook URLs יהיו תקינים מחוץ ל-localhost.
+
+> ⚠️ הסכימות של Meshulam ו-CardCom נכתבו לפי התיעוד הציבורי שלהם, אבל לפני העלאה
+> לפרודקשן מומלץ לבדוק את הזרימה מקצה לקצה עם credentials של סביבת test —
+> פרטי שדות עלולים להשתנות בין גרסאות API.
 
 המסמך המלא של האפיון נמצא ב-[`docs/spec.html`](./docs/spec.html).
 פרומפטים לבנייה הדרגתית עם Claude Code נמצאים ב-[`CLAUDE.md`](./CLAUDE.md).

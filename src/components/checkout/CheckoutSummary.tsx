@@ -44,7 +44,8 @@ export default function CheckoutSummary() {
     setError(null);
     setSubmitting(true);
     try {
-      const res = await fetch("/api/create-order", {
+      // 1. Create the order record
+      const orderRes = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -57,15 +58,31 @@ export default function CheckoutSummary() {
           contactEmail: order.contactEmail,
         }),
       });
-      const data = await res.json();
-      if (!data.ok) {
-        setError(data.message ?? "יצירת ההזמנה נכשלה");
+      const orderData = await orderRes.json();
+      if (!orderData.ok) {
+        setError(orderData.message ?? "יצירת ההזמנה נכשלה");
         setSubmitting(false);
         return;
       }
-      // TODO: real payment gateway in step 8 (Meshulam/CardCom)
-      // For now: simulate successful charge then go to success page
-      router.push(`/success?order=${encodeURIComponent(data.orderId)}`);
+
+      // 2. Initiate payment for that order — provider chosen by env.
+      // Mock provider returns a local /success URL and marks paid immediately.
+      // Real providers (Meshulam/CardCom) return their hosted payment page.
+      const payRes = await fetch("/api/payment/init", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: orderData.orderId }),
+      });
+      const payData = await payRes.json();
+      if (!payData.ok || !payData.redirectUrl) {
+        setError(payData.message ?? "הסליקה נכשלה");
+        setSubmitting(false);
+        return;
+      }
+
+      // 3. Redirect to whatever the provider gave us
+      // (absolute URL for real gateways, /success for mock)
+      window.location.href = payData.redirectUrl;
     } catch {
       setError("שגיאת רשת");
       setSubmitting(false);

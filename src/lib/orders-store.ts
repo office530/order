@@ -1,5 +1,5 @@
 import "server-only";
-import type { Location, PackageId } from "./types";
+import type { Location, OrderStatus, PackageId } from "./types";
 
 export interface CreateOrderInput {
   phone: string;
@@ -18,19 +18,28 @@ export interface CreatedOrder {
   createdAt: number;
 }
 
+export interface OrderRecord extends CreateOrderInput {
+  id: string;
+  createdAt: number;
+  status: OrderStatus;
+  depositPaid: boolean;
+  paymentId: string | null;
+}
+
 interface OrdersStore {
   create(input: CreateOrderInput): Promise<CreatedOrder>;
+  get(orderId: string): Promise<OrderRecord | null>;
+  markPaid(orderId: string, paymentId: string): Promise<void>;
 }
 
 /* ────────────── In-memory backend (dev fallback) ────────────── */
 
-type MemBag = { orders: Map<string, CreateOrderInput & CreatedOrder> };
+type MemBag = { orders: Map<string, OrderRecord> };
 const g = globalThis as unknown as { __ordersMem?: MemBag };
 const mem: MemBag = g.__ordersMem ?? { orders: new Map() };
 g.__ordersMem = mem;
 
 function uuid(): string {
-  // crypto.randomUUID is available on Node 19+; fallback just in case
   return (
     globalThis.crypto?.randomUUID?.() ??
     "mem-" + Math.random().toString(36).slice(2) + Date.now().toString(36)
@@ -41,8 +50,29 @@ const memoryStore: OrdersStore = {
   async create(input) {
     const id = uuid();
     const createdAt = Date.now();
-    mem.orders.set(id, { ...input, id, createdAt });
+    const record: OrderRecord = {
+      ...input,
+      id,
+      createdAt,
+      status: "pending",
+      depositPaid: false,
+      paymentId: null,
+    };
+    mem.orders.set(id, record);
     return { id, createdAt };
+  },
+
+  async get(orderId) {
+    return mem.orders.get(orderId) ?? null;
+  },
+
+  async markPaid(orderId, paymentId) {
+    const order = mem.orders.get(orderId);
+    if (!order) return;
+    order.depositPaid = true;
+    order.paymentId = paymentId;
+    order.status = "paid";
+    mem.orders.set(orderId, order);
   },
 };
 
@@ -67,7 +97,6 @@ const supabaseStore: OrdersStore = {
   async create(input) {
     const sb = await supabaseAdmin();
 
-    // Upsert customer by phone
     const { data: customer, error: customerErr } = await sb
       .from("customers")
       .upsert(
@@ -105,6 +134,49 @@ const supabaseStore: OrdersStore = {
     }
 
     return { id: order.id, createdAt: new Date(order.created_at).getTime() };
+  },
+
+  async get(orderId) {
+    const sb = await supabaseAdmin();
+    const { data: order } = await sb
+      .from("orders")
+      .select("*, customers(phone, name, email, company)")
+      .eq("id", orderId)
+      .maybeSingle();
+    if (!order) return null;
+
+    const customer = order.customers as
+      | { phone: string; name: string | null; email: string | null; company: string | null }
+      | null;
+
+    return {
+      id: order.id,
+      createdAt: new Date(order.created_at).getTime(),
+      phone: customer?.phone ?? "",
+      packageId: order.package_id,
+      areaSqm: order.area_sqm,
+      location: order.location,
+      floor: order.floor,
+      estimatedPrice: order.estimated_price,
+      contactName: customer?.name ?? "",
+      contactEmail: customer?.email ?? "",
+      companyName: customer?.company ?? null,
+      status: order.status,
+      depositPaid: order.deposit_paid,
+      paymentId: order.payment_id,
+    };
+  },
+
+  async markPaid(orderId, paymentId) {
+    const sb = await supabaseAdmin();
+    await sb
+      .from("orders")
+      .update({
+        deposit_paid: true,
+        payment_id: paymentId,
+        status: "paid",
+      })
+      .eq("id", orderId);
   },
 };
 

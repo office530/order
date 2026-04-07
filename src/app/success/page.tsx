@@ -9,11 +9,12 @@ export const metadata = {
 };
 
 interface PageProps {
-  searchParams: { order?: string };
+  searchParams: { order?: string; pending?: string };
 }
 
 export default function SuccessPage({ searchParams }: PageProps) {
   const orderId = searchParams.order;
+  const pending = searchParams.pending === "1";
 
   return (
     <>
@@ -39,12 +40,14 @@ export default function SuccessPage({ searchParams }: PageProps) {
               </svg>
             </div>
 
-            <p className="eyebrow mb-3">ההזמנה אושרה</p>
+            <p className="eyebrow mb-3">{pending ? "ממתין לאישור" : "ההזמנה אושרה"}</p>
             <h1 className="text-display-sm sm:text-display text-ink-primary tracking-tight mb-4">
-              תודה — שריינו לך מקום!
+              {pending ? "כמעט שם — ממתינים לאישור הסליקה" : "תודה — שריינו לך מקום!"}
             </h1>
             <p className="text-lg text-ink-secondary max-w-2xl mx-auto mb-3">
-              קיבלנו את המקדמה שלך ושריינו את תור הפרויקט בלוח הזמנים שלנו.
+              {pending
+                ? "התשלום נשלח לעיבוד. ברגע שהאישור מגיע מחברת הסליקה (בדרך כלל תוך דקה) — תקבל אישור במייל."
+                : "קיבלנו את המקדמה שלך ושריינו את תור הפרויקט בלוח הזמנים שלנו."}
             </p>
             {orderId && (
               <p className="text-sm text-ink-secondary">
