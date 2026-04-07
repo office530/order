@@ -15,15 +15,16 @@ export default function ComingSoon({ title, subtitle, currentStep }: Props) {
   return (
     <>
       <Header />
-      <main className="min-h-[80vh] pt-32">
+      <main className="min-h-[80vh] bg-surface-secondary">
         <ProgressBar current={currentStep} />
-        <div className="container-prose text-center py-24">
-          <p className="text-gold text-sm tracking-[0.3em] uppercase mb-4">
-            <span className="accent-line" />
-            בקרוב
+        <div className="container-prose text-center pt-12 pb-24">
+          <p className="eyebrow mb-4">בקרוב</p>
+          <h1 className="text-display-sm sm:text-display text-ink-primary tracking-tight mb-5">
+            {title}
+          </h1>
+          <p className="text-lg text-ink-secondary max-w-xl mx-auto mb-10 leading-relaxed">
+            {subtitle}
           </p>
-          <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight mb-6">{title}</h1>
-          <p className="text-lg text-white/60 max-w-xl mx-auto mb-10">{subtitle}</p>
           <Link href="/" className="btn-ghost">
             ← חזרה לדף הבית
           </Link>

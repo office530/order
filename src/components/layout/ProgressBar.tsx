@@ -5,26 +5,28 @@ const STEPS: { key: Step; label: string }[] = [
   { key: "packages", label: "חבילה" },
   { key: "configure", label: "פרטים" },
   { key: "checkout", label: "סיכום" },
-  { key: "success", label: "סיום" },
+  { key: "success", label: "אישור" },
 ];
 
 export default function ProgressBar({ current }: { current: Step }) {
   const currentIdx = STEPS.findIndex((s) => s.key === current);
+
   return (
-    <div className="container-prose py-8">
-      <div className="flex items-center justify-between gap-2">
+    <div className="container-prose py-6">
+      <div className="flex items-center justify-between gap-2 max-w-2xl mx-auto">
         {STEPS.map((s, idx) => {
           const done = idx < currentIdx;
           const active = idx === currentIdx;
+
           return (
-            <div key={s.key} className="flex-1 flex items-center gap-2 last:flex-none">
-              <div className="flex flex-col items-center">
+            <div key={s.key} className="flex items-center flex-1 last:flex-none">
+              <div className="flex flex-col items-center gap-2">
                 <div
                   className={[
-                    "w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border transition-colors",
-                    active && "bg-gold border-gold text-ink-900",
-                    done && "bg-gold/20 border-gold text-gold",
-                    !active && !done && "bg-transparent border-ink-700 text-white/40",
+                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200",
+                    active && "bg-primary-500 text-white shadow-ring-blue",
+                    done && "bg-primary-500 text-white",
+                    !active && !done && "bg-white border-2 border-line text-ink-secondary",
                   ]
                     .filter(Boolean)
                     .join(" ")}
@@ -33,8 +35,12 @@ export default function ProgressBar({ current }: { current: Step }) {
                 </div>
                 <div
                   className={[
-                    "text-xs mt-2 whitespace-nowrap",
-                    active ? "text-gold font-semibold" : "text-white/50",
+                    "text-xs whitespace-nowrap transition-colors",
+                    active
+                      ? "text-primary-500 font-semibold"
+                      : done
+                        ? "text-ink-primary font-medium"
+                        : "text-ink-secondary",
                   ].join(" ")}
                 >
                   {s.label}
@@ -43,8 +49,8 @@ export default function ProgressBar({ current }: { current: Step }) {
               {idx < STEPS.length - 1 && (
                 <div
                   className={[
-                    "flex-1 h-px transition-colors",
-                    done ? "bg-gold" : "bg-ink-700",
+                    "flex-1 h-px mx-2 transition-colors",
+                    done ? "bg-primary-500" : "bg-line",
                   ].join(" ")}
                 />
               )}

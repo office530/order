@@ -10,6 +10,7 @@ export default function HomePage() {
         <Hero />
         <Stats />
         <HowItWorks />
+        <PackagesPreview />
         <Gallery />
         <Faq />
         <CtaBottom />
@@ -19,54 +20,39 @@ export default function HomePage() {
   );
 }
 
-/* ───────────────────────── HERO ───────────────────────── */
+/* ─────────────────────────── HERO ─────────────────────────── */
 
 function Hero() {
   return (
-    <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
-      {/* Background gradient + grain */}
-      <div className="absolute inset-0 bg-gradient-to-b from-ink-900 via-[#1a1410] to-ink-900" />
+    <section className="relative overflow-hidden bg-white">
+      {/* soft gradient background */}
       <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8a96e'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-        }}
-      />
-      <div
-        className="absolute -top-1/2 left-1/2 -translate-x-1/2 w-[120%] h-[120%] opacity-30"
+        className="absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse at center, rgba(200,169,110,0.15) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(37,99,235,0.06), transparent 60%)",
         }}
       />
 
-      {/* Top discount bar */}
-      <div className="absolute top-24 inset-x-0 flex justify-center z-10 px-4">
-        <div className="card-dark px-5 py-2 text-sm text-gold-light flex items-center gap-2">
-          <span className="inline-block w-2 h-2 rounded-full bg-gold animate-pulse" />
-          הזמנה אונליין: הנחת מקדמה של ‎₪30,000 על פרויקטים שנפתחים השבוע
-        </div>
-      </div>
+      <div className="container-prose pt-20 sm:pt-28 pb-20 text-center">
+        <span className="badge-gold mb-6">
+          <span className="w-1.5 h-1.5 rounded-full bg-gold-500 me-1" />
+          חדש בישראל · The Tesla Model for Office Fit-Out
+        </span>
 
-      <div className="container-prose relative z-10 text-center pt-32 pb-20">
-        <p className="text-gold text-sm tracking-[0.3em] uppercase mb-6 opacity-90">
-          The Tesla Model for Office Fit-Out
-        </p>
-
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6">
+        <h1 className="text-display-sm sm:text-display lg:text-display-lg text-ink-primary tracking-tight mb-6">
           המשרד שלך,
           <br />
-          <span className="text-gold">מוכן באונליין.</span>
+          <span className="text-primary-500">מוכן באונליין.</span>
         </h1>
 
-        <p className="text-lg sm:text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
+        <p className="text-lg sm:text-xl text-ink-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
           בחר חבילה, ראה מחיר אמיתי, שלם מקדמה — והפרויקט מתחיל.
           <br className="hidden sm:block" />
           ללא פגישות, ללא הצעות מחיר אינסופיות, ללא הפתעות.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
           <Link href="/auth" className="btn-primary">
             בנה את המשרד שלך
             <ArrowLeft />
@@ -76,37 +62,78 @@ function Hero() {
           </Link>
         </div>
 
-        <p className="text-xs text-white/40 mt-8">
-          ההצעה תקפה למעט ‎14 ימים · מקדמה של ‎₪2,000 בלבד · החזר מלא אם לא מתאים
+        <p className="text-xs text-ink-secondary">
+          חינם · ללא התחייבות · החזר מלא אם לא מתאים
         </p>
       </div>
 
-      {/* Scroll cue */}
-      <div className="absolute bottom-8 inset-x-0 flex justify-center z-10">
-        <div className="w-px h-12 bg-gradient-to-b from-transparent via-gold/60 to-transparent" />
+      {/* Mock product image — subtle frame */}
+      <div className="container-prose pb-20">
+        <div className="relative aspect-[16/9] rounded-3xl border border-line bg-surface-secondary overflow-hidden shadow-card">
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg, #F8F9FC 0%, #EFF2F8 50%, #F8F9FC 100%)",
+            }}
+          />
+          {/* faux configurator preview */}
+          <div className="absolute inset-0 flex">
+            <div className="hidden md:flex flex-col justify-center gap-3 w-72 p-8 bg-white border-s border-line">
+              <div className="select-card-active">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-semibold text-ink-primary">SIGNATURE</div>
+                    <div className="text-xs text-ink-secondary">‎₪5,000 / מ״ר</div>
+                  </div>
+                  <div className="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center text-white text-xs">
+                    ✓
+                  </div>
+                </div>
+              </div>
+              <div className="select-card">
+                <div className="text-sm font-semibold text-ink-primary">PREMIUM</div>
+                <div className="text-xs text-ink-secondary">‎₪4,000 / מ״ר</div>
+              </div>
+              <div className="select-card">
+                <div className="text-sm font-semibold text-ink-primary">CLASSIC</div>
+                <div className="text-xs text-ink-secondary">‎₪3,500 / מ״ר</div>
+              </div>
+              <div className="select-card">
+                <div className="text-sm font-semibold text-ink-primary">ESSENTIAL</div>
+                <div className="text-xs text-ink-secondary">‎₪3,000 / מ״ר</div>
+              </div>
+            </div>
+            <div className="flex-1 flex items-center justify-center text-ink-secondary text-sm">
+              <span className="opacity-60">תצוגה מקדימה של הקונפיגורטור</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
 
-/* ───────────────────────── STATS ───────────────────────── */
+/* ─────────────────────────── STATS ─────────────────────────── */
 
 function Stats() {
   const items = [
     { value: "126", label: "פרויקטים שהושלמו" },
-    { value: "220,000", label: 'מ"ר שעוצבו' },
-    { value: "4.9", label: "דירוג ממוצע (מתוך 5)" },
+    { value: "220,000", label: 'מ״ר שעוצבו' },
+    { value: "4.9", label: "דירוג ממוצע" },
   ];
   return (
-    <section className="border-y border-ink-700 bg-ink-800/50">
+    <section className="border-y border-line bg-surface-secondary">
       <div className="container-prose py-16">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-4">
           {items.map((it) => (
             <div key={it.label} className="text-center">
-              <div className="text-5xl sm:text-6xl font-extrabold text-gold mb-2 tracking-tight">
+              <div className="text-5xl sm:text-6xl font-extrabold text-primary-500 mb-2 tracking-tight tabular-nums">
                 {it.value}
               </div>
-              <div className="text-sm text-white/60 uppercase tracking-wider">{it.label}</div>
+              <div className="text-sm text-ink-secondary uppercase tracking-wider font-medium">
+                {it.label}
+              </div>
             </div>
           ))}
         </div>
@@ -115,53 +142,45 @@ function Stats() {
   );
 }
 
-/* ───────────────────────── HOW IT WORKS ───────────────────────── */
+/* ─────────────────────────── HOW IT WORKS ─────────────────────────── */
 
 function HowItWorks() {
   const steps = [
-    {
-      n: "01",
-      title: "אמת את הטלפון שלך",
-      body: "הזנה מהירה של מספר טלפון וקוד SMS. שניות.",
-    },
+    { n: "01", title: "אמת טלפון", body: "הזנת מספר וקוד SMS. שניות." },
     {
       n: "02",
       title: "בחר חבילה",
-      body: "ארבע רמות, מאסנשיאל ועד סיגנצ׳ר. כל מה שכלול שקוף לחלוטין.",
+      body: "ארבע רמות, מאסנשיאל ועד סיגנצ׳ר. הכל שקוף.",
     },
     {
       n: "03",
-      title: "הזן פרטי משרד",
-      body: 'שטח במ"ר, אזור, קומה — והמערכת מציגה לך מחיר אמיתי בזמן אמת.',
+      title: "הזן פרטים",
+      body: 'שטח, אזור, קומה — והמערכת מציגה מחיר אמיתי.',
     },
     {
       n: "04",
-      title: "שלם מקדמה והתחל",
-      body: "מקדמה של ‎₪2,000 סוגרת לך מקום. אם לא מתאים — החזר מלא.",
+      title: "שלם מקדמה",
+      body: "‎₪2,000 סוגרת מקום. אם לא מתאים — החזר מלא.",
     },
   ];
   return (
-    <section id="how" className="py-24">
+    <section id="how" className="py-24 bg-white">
       <div className="container-prose">
         <div className="text-center mb-16">
-          <p className="text-gold text-sm tracking-[0.3em] uppercase mb-3">
-            <span className="accent-line" />
-            ארבעה צעדים
-          </p>
-          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+          <p className="eyebrow mb-3">ארבעה צעדים</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-ink-primary tracking-tight">
             ככה זה עובד
           </h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((s) => (
-            <div
-              key={s.n}
-              className="card-dark p-8 hover:border-gold/40 transition-all duration-300"
-            >
-              <div className="text-gold text-sm font-semibold mb-4 tracking-wider">{s.n}</div>
-              <h3 className="text-xl font-bold mb-3">{s.title}</h3>
-              <p className="text-white/60 leading-relaxed">{s.body}</p>
+            <div key={s.n} className="card card-hover p-7">
+              <div className="text-primary-500 text-sm font-bold mb-4 tracking-wider">
+                {s.n}
+              </div>
+              <h3 className="text-lg font-bold text-ink-primary mb-2">{s.title}</h3>
+              <p className="text-ink-secondary text-sm leading-relaxed">{s.body}</p>
             </div>
           ))}
         </div>
@@ -170,7 +189,68 @@ function HowItWorks() {
   );
 }
 
-/* ───────────────────────── GALLERY ───────────────────────── */
+/* ─────────────────────────── PACKAGES PREVIEW ─────────────────────────── */
+
+function PackagesPreview() {
+  const packages = [
+    { id: "essential", name: "ESSENTIAL", he: "אסנשיאל", price: "3,000", badge: null },
+    { id: "classic", name: "CLASSIC", he: "קלאסיק", price: "3,500", badge: "הכי פופולרי" },
+    { id: "premium", name: "PREMIUM", he: "פרימיום", price: "4,000", badge: null },
+    { id: "signature", name: "SIGNATURE", he: "סיגנצ׳ר", price: "5,000", badge: null },
+  ];
+  return (
+    <section className="py-24 bg-surface-secondary border-y border-line">
+      <div className="container-prose">
+        <div className="text-center mb-16">
+          <p className="eyebrow mb-3">חבילות</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-ink-primary tracking-tight">
+            ארבע רמות. שקיפות מלאה.
+          </h2>
+          <p className="text-ink-secondary mt-4 max-w-xl mx-auto">
+            מאסנשיאל ועד סיגנצ׳ר — בחר את הרמה שמתאימה למשרד שלך, ראה מחיר מיידית.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {packages.map((p) => (
+            <div
+              key={p.id}
+              className={`card card-hover p-6 relative ${
+                p.badge ? "border-2 border-primary-500" : ""
+              }`}
+            >
+              {p.badge && (
+                <div className="absolute -top-3 inset-x-0 flex justify-center">
+                  <span className="badge-gold">{p.badge}</span>
+                </div>
+              )}
+              <div className="text-xs font-bold text-ink-secondary tracking-widest mb-2">
+                {p.name}
+              </div>
+              <div className="text-lg font-bold text-ink-primary mb-4">{p.he}</div>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-primary-500 tabular-nums">
+                  ₪{p.price}
+                </span>
+                <span className="text-xs text-ink-secondary">/ מ״ר</span>
+              </div>
+              <div className="text-xs text-ink-secondary">החל מ-‎₪{p.price}/מ״ר</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <Link href="/auth" className="btn-primary">
+            בנה את החבילה שלך
+            <ArrowLeft />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────── GALLERY ─────────────────────────── */
 
 function Gallery() {
   const projects = [
@@ -182,36 +262,35 @@ function Gallery() {
     { name: "Creative Agency", area: "210 מ״ר", style: "Classic" },
   ];
   return (
-    <section className="py-24 bg-ink-800/30">
+    <section id="projects" className="py-24 bg-white">
       <div className="container-prose">
         <div className="text-center mb-16">
-          <p className="text-gold text-sm tracking-[0.3em] uppercase mb-3">
-            <span className="accent-line" />
-            פרויקטים אחרונים
-          </p>
-          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+          <p className="eyebrow mb-3">פרויקטים אחרונים</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-ink-primary tracking-tight">
             עבודה מדברת בעד עצמה
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {projects.map((p) => (
             <div
               key={p.name}
-              className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-ink-700 to-ink-800 border border-ink-700"
+              className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface-secondary border border-line card-hover"
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/20 to-transparent" />
               <div
-                className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500"
+                className="absolute inset-0 opacity-60 group-hover:opacity-80 transition-opacity duration-500"
                 style={{
                   background:
-                    "radial-gradient(circle at 30% 40%, rgba(200,169,110,0.2), transparent 70%)",
+                    "linear-gradient(135deg, #F8F9FC 0%, #EFF2F8 60%, #DBEAFE 100%)",
                 }}
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/40 to-transparent" />
               <div className="absolute bottom-0 inset-x-0 p-6">
-                <div className="text-xs text-gold tracking-wider uppercase mb-1">{p.style}</div>
-                <div className="text-2xl font-bold mb-1">{p.name}</div>
-                <div className="text-sm text-white/60">{p.area}</div>
+                <div className="text-xs text-primary-500 font-bold tracking-wider uppercase mb-1">
+                  {p.style}
+                </div>
+                <div className="text-xl font-bold text-ink-primary mb-1">{p.name}</div>
+                <div className="text-sm text-ink-secondary">{p.area}</div>
               </div>
             </div>
           ))}
@@ -221,7 +300,7 @@ function Gallery() {
   );
 }
 
-/* ───────────────────────── FAQ ───────────────────────── */
+/* ─────────────────────────── FAQ ─────────────────────────── */
 
 function Faq() {
   const items = [
@@ -247,29 +326,28 @@ function Faq() {
     },
   ];
   return (
-    <section className="py-24">
+    <section className="py-24 bg-surface-secondary border-t border-line">
       <div className="container-prose max-w-3xl">
         <div className="text-center mb-16">
-          <p className="text-gold text-sm tracking-[0.3em] uppercase mb-3">
-            <span className="accent-line" />
-            שאלות נפוצות
-          </p>
-          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight">בלי קטנות</h2>
+          <p className="eyebrow mb-3">שאלות נפוצות</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-ink-primary tracking-tight">
+            בלי קטנות
+          </h2>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {items.map((it) => (
             <details
               key={it.q}
-              className="group card-dark p-6 cursor-pointer open:border-gold/40 transition-colors"
+              className="group card p-6 cursor-pointer open:border-primary-500 open:shadow-card transition-all"
             >
               <summary className="flex items-center justify-between gap-4 list-none">
-                <span className="text-lg font-semibold">{it.q}</span>
-                <span className="text-gold text-2xl group-open:rotate-45 transition-transform duration-300">
+                <span className="text-base font-semibold text-ink-primary">{it.q}</span>
+                <span className="text-primary-500 text-2xl group-open:rotate-45 transition-transform duration-300 leading-none">
                   +
                 </span>
               </summary>
-              <p className="mt-4 text-white/70 leading-relaxed">{it.a}</p>
+              <p className="mt-4 text-ink-secondary leading-relaxed">{it.a}</p>
             </details>
           ))}
         </div>
@@ -278,35 +356,37 @@ function Faq() {
   );
 }
 
-/* ───────────────────────── CTA BOTTOM ───────────────────────── */
+/* ─────────────────────────── CTA BOTTOM ─────────────────────────── */
 
 function CtaBottom() {
   return (
-    <section className="py-24 bg-gradient-to-b from-ink-900 to-[#1a1410]">
+    <section className="py-24 bg-white">
       <div className="container-prose max-w-3xl text-center">
-        <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6">
+        <h2 className="text-3xl sm:text-4xl font-bold text-ink-primary tracking-tight mb-5">
           מוכן לראות מחיר?
         </h2>
-        <p className="text-lg text-white/60 mb-10">
+        <p className="text-lg text-ink-secondary mb-10">
           שלוש דקות. אפס מחויבות. כל המידע שאתה צריך כדי להחליט.
         </p>
         <Link href="/auth" className="btn-primary">
           התחל עכשיו
           <ArrowLeft />
         </Link>
-        <p className="text-xs text-white/40 mt-6">חינם · ללא פגישה · ללא רישום אשראי</p>
+        <p className="text-xs text-ink-secondary mt-6">
+          חינם · ללא פגישה · ללא רישום אשראי
+        </p>
       </div>
     </section>
   );
 }
 
-/* ───────────────────────── ICONS ───────────────────────── */
+/* ─────────────────────────── ICONS ─────────────────────────── */
 
 function ArrowLeft() {
   return (
     <svg
-      width="20"
-      height="20"
+      width="18"
+      height="18"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
