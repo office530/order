@@ -2,9 +2,12 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 inset-x-0 z-30 bg-white/80 backdrop-blur-md border-b border-line">
+    <header className="sticky top-0 inset-x-0 z-30 bg-paper/85 backdrop-blur-md border-b border-line">
       <div className="container-prose flex items-center justify-between h-16">
-        <Link href="/" className="text-xl font-extrabold tracking-tight text-ink-primary">
+        <Link
+          href="/"
+          className="font-serif text-2xl font-medium tracking-tight text-ink-primary leading-none"
+        >
           RNVT<span className="text-primary-500">.</span>
         </Link>
 

@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import type { Package } from "@/lib/types";
 import { formatILS } from "@/lib/pricing";
+import { TIER_HERO_IMAGES } from "@/lib/gallery";
 
 interface Props {
   pkg: Package;
@@ -50,23 +52,17 @@ export default function PackageCard({ pkg, selected, recommended, onSelect }: Pr
         </div>
       )}
 
-      <div
-        aria-hidden="true"
-        className="aspect-[5/3] rounded-xl mb-5 overflow-hidden border border-line relative"
-        style={{
-          background: isSignature
-            ? "linear-gradient(135deg, #FBF7EC 0%, #F4ECD3 50%, #E8D9A8 100%)"
-            : pkg.id === "premium"
-              ? "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #BFDBFE 100%)"
-              : pkg.id === "classic"
-                ? "linear-gradient(135deg, #F8F9FC 0%, #E8ECF2 50%, #D5DBE6 100%)"
-                : "linear-gradient(135deg, #FAFAFA 0%, #F4F4F5 50%, #E4E4E7 100%)",
-        }}
-      >
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-xs text-ink-secondary opacity-70 font-medium tracking-wider">
-            {pkg.name}
-          </div>
+      <div className="aspect-[5/3] rounded-xl mb-5 overflow-hidden border border-line relative bg-surface-secondary">
+        <Image
+          src={TIER_HERO_IMAGES[pkg.id].src}
+          alt={TIER_HERO_IMAGES[pkg.id].alt}
+          fill
+          sizes="(min-width:1024px) 22vw, (min-width:640px) 45vw, 90vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-ink-primary/80 to-transparent" />
+        <div className="absolute bottom-3 right-4 text-[10px] font-semibold tracking-[0.25em] uppercase text-paper">
+          {pkg.name}
         </div>
       </div>
 

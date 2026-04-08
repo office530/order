@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: #ffffff;
-  --color-bg-secondary: #f8f9fc;
-  --color-text-primary: #1a1f36;
-  --color-text-secondary: #6b7294;
+  --color-bg: #faf9f6; /* warm paper */
+  --color-bg-secondary: #f4f2ec;
+  --color-text-primary: #1a1a1f;
+  --color-text-secondary: #6b6b73;
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;
   --color-gold: #c8a96e;
   --color-gold-hover: #b8944e;
-  --color-border: #e8ecf2;
+  --color-border: #e5e2d9;
 }
 
 * {
@@ -26,12 +26,12 @@ html {
 body {
   background: var(--color-bg);
   color: var(--color-text-primary);
-  font-feature-settings: "kern", "liga", "calt";
+  font-feature-settings: "kern", "liga", "calt", "ss01";
 }
 
 ::selection {
   background: var(--color-primary);
-  color: #ffffff;
+  color: #faf9f6;
 }
 
 @layer components {
@@ -43,7 +43,7 @@ body {
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg
            bg-primary-500 text-white font-semibold text-base
-           transition-all duration-200
+           transition-all duration-300
            hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-500/20
            active:scale-[0.98]
            focus:outline-none focus-visible:shadow-ring-blue
@@ -55,10 +55,10 @@ body {
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg
            border border-line text-ink-primary font-semibold text-base
-           transition-all duration-200
+           transition-all duration-300
            hover:bg-surface-secondary hover:border-line-strong
            focus:outline-none focus-visible:shadow-ring-blue
-           disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-transparent;
+           disabled:opacity-60 disabled:cursor-not-allowed;
   }
 
   .btn-link {
@@ -71,10 +71,10 @@ body {
   }
 
   .card-hover {
-    @apply transition-all duration-200 hover:shadow-card hover:border-line-strong;
+    @apply transition-all duration-300 hover:shadow-card hover:border-line-strong;
   }
 
-  /* כרטיס בחירה Tesla-style — לא נבחר */
+  /* כרטיס בחירה — לא נבחר */
   .select-card {
     @apply relative bg-white border border-line rounded-xl px-5 py-4
            cursor-pointer transition-all duration-200
@@ -84,7 +84,6 @@ body {
   /* כרטיס בחירה — נבחר (כחול 2px) */
   .select-card-active {
     @apply border-2 border-primary-500 bg-white shadow-ring-blue;
-    /* מבטל את ה-padding shift של border-2 vs border */
     margin: -1px;
   }
 
@@ -101,9 +100,39 @@ body {
     @apply badge bg-primary-50 text-primary-600;
   }
 
-  /* ───────── Section eyebrow ───────── */
+  /* ───────── Editorial section primitives ─────────
+     These create the architectural-editorial vocabulary used across pages.
+     Hebrew display headlines use font-serif (Frank Ruhl Libre).             */
+
+  /* Section eyebrow with ruled line — like architectural drawing labels */
   .eyebrow {
-    @apply inline-block text-xs font-semibold uppercase tracking-[0.2em] text-primary-500;
+    @apply inline-flex items-center gap-3 text-[11px] font-semibold
+           uppercase tracking-[0.28em] text-ink-secondary;
+  }
+
+  .eyebrow::before {
+    content: "";
+    @apply inline-block w-8 h-px bg-ink-primary;
+  }
+
+  /* Numbered eyebrow for "how it works" sections */
+  .eyebrow-num {
+    @apply font-serif text-sm tabular-nums text-ink-secondary;
+  }
+
+  /* Display headline */
+  .display-h {
+    @apply font-serif font-light text-ink-primary tracking-tight leading-[1.05];
+  }
+
+  /* Architectural rule — full-width hairline divider */
+  .arch-rule {
+    @apply h-px w-full bg-line-strong;
+  }
+
+  /* Pull quote / accent serif inline */
+  .serif-accent {
+    @apply font-serif italic text-ink-primary;
   }
 }
 
@@ -114,5 +143,18 @@ body {
   }
   .scrollbar-none::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Subtle blueprint grid — used as a hero background */
+  .bg-blueprint {
+    background-image:
+      linear-gradient(rgba(26, 26, 31, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26, 26, 31, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  /* Faint grain to give the off-white surface tooth */
+  .bg-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }

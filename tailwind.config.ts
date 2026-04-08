@@ -21,28 +21,38 @@ const config: Config = {
           500: "#C8A96E",
           600: "#B8944E",
         },
-        // Surfaces
+        // Warm off-white "paper" + cool surface
+        paper: "#FAF9F6",
         surface: {
           DEFAULT: "#FFFFFF",
-          secondary: "#F8F9FC",
+          secondary: "#F4F2EC",
         },
-        // Ink (text)
+        // Ink (text) — slightly warmer than the previous near-black
         ink: {
-          DEFAULT: "#1A1F36",
-          primary: "#1A1F36",
-          secondary: "#6B7294",
+          DEFAULT: "#1A1A1F",
+          primary: "#1A1A1F",
+          secondary: "#6B6B73",
         },
-        // Borders
+        // Borders — a touch warmer to harmonize with paper
         line: {
-          DEFAULT: "#E8ECF2",
-          strong: "#D5DBE6",
+          DEFAULT: "#E5E2D9",
+          strong: "#D2CEC2",
         },
         // Status
         success: "#10B981",
-        danger: "#EF4444",
+        danger: "#B91C1C",
       },
       fontFamily: {
         sans: ["var(--font-assistant)", "system-ui", "sans-serif"],
+        // Renamed from "display" → "serif" to avoid collision with Tailwind's
+        // built-in `font-display` utility (which maps to the CSS font-display
+        // property used in @font-face). Apply with `font-serif`.
+        serif: [
+          "var(--font-display)",
+          "Frank Ruhl Libre",
+          "Georgia",
+          "serif",
+        ],
       },
       fontSize: {
         "display-sm": [

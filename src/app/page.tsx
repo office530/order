@@ -1,22 +1,17 @@
+import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Reveal from "@/components/ui/Reveal";
-import CountUp from "@/components/ui/CountUp";
 import Countdown from "@/components/ui/Countdown";
 import HeroPreview from "@/components/home/HeroPreview";
 import { PACKAGES } from "@/lib/packages";
 import { formatILS } from "@/lib/pricing";
 import type { PackageId } from "@/lib/types";
+import { GALLERY_PHOTOS, ROOM_LABELS, TIER_HERO_IMAGES } from "@/lib/gallery";
 
 const RECOMMENDED_PACKAGE: PackageId = "classic";
-
-// Display order for the landing-page preview row.
-// Note: this differs from the configurator's anchor-pricing order — here
-// we show the price ladder ascending so the user can scan rate first.
 const PREVIEW_ORDER: PackageId[] = ["essential", "classic", "premium", "signature"];
-
-// 14-day discount window — אם רוצה לרענן, החלף את התאריך
 const DISCOUNT_DEADLINE = "2026-04-21T23:59:59+03:00";
 
 export default function HomePage() {
@@ -38,20 +33,19 @@ export default function HomePage() {
   );
 }
 
-/* ─────────────────── DISCOUNT BANNER (top, sticky-ish) ─────────────────── */
-
 function DiscountBanner() {
   return (
-    <div className="relative bg-gradient-to-l from-primary-50 via-white to-primary-50 border-b border-line">
-      <div className="container-prose flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 py-3">
-        <div className="flex items-center gap-2 text-sm">
-          <span className="badge-gold">בלעדי לאתר</span>
-          <span className="text-ink-primary font-semibold">
-            הנחה של ‎₪30,000 למזמינים אונליין
+    <div className="relative bg-ink-primary text-paper">
+      <div className="container-prose flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 py-3 text-sm">
+        <div className="flex items-center gap-3">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse" />
+          <span className="font-semibold">
+            הנחה של <span className="font-serif font-medium">‎₪30,000</span> למזמינים אונליין
           </span>
         </div>
+        <div className="hidden sm:block w-px h-4 bg-paper/20" />
         <div className="flex items-center gap-3">
-          <span className="text-xs text-ink-secondary">תוקף ההצעה:</span>
+          <span className="text-paper/60 uppercase tracking-wider text-[11px]">תוקף ההצעה</span>
           <Countdown deadline={DISCOUNT_DEADLINE} />
         </div>
       </div>
@@ -59,46 +53,42 @@ function DiscountBanner() {
   );
 }
 
-/* ─────────────────────────── HERO ─────────────────────────── */
-
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-white">
-      {/* soft gradient background */}
+    <section className="relative overflow-hidden bg-paper">
+      <div className="absolute inset-0 bg-blueprint -z-10" />
       <div
         className="absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(37,99,235,0.06), transparent 60%)",
+            "radial-gradient(ellipse 90% 70% at 50% 0%, rgba(200,169,110,0.08), transparent 60%)",
         }}
       />
+      <div className="absolute inset-0 bg-grain opacity-50 -z-10 pointer-events-none" />
 
-      <div className="container-prose pt-20 sm:pt-28 pb-16 text-center">
+      <div className="container-prose pt-24 sm:pt-32 pb-20 text-center">
         <Reveal immediate>
-          <span className="badge-gold mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-gold-500 me-1" />
-            פלטפורמת קונפיגורטור ראשונה בישראל
-          </span>
+          <p className="eyebrow mb-8 mx-auto">פלטפורמת קונפיגורטור ראשונה בישראל</p>
         </Reveal>
 
         <Reveal immediate delay={0.1}>
-          <h1 className="text-display-sm sm:text-display text-ink-primary tracking-tight mb-6 leading-[1.05]">
+          <h1 className="display-h text-5xl sm:text-7xl lg:text-[5.5rem] mb-8">
             המשרד שלך,
             <br />
-            <span className="text-primary-500">מוכן להזמנה</span>
+            <span className="serif-accent font-medium">מוכן להזמנה</span>
           </h1>
         </Reveal>
 
         <Reveal immediate delay={0.2}>
-          <p className="text-lg sm:text-xl text-ink-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
-            בחר חבילה, ראה מפרט, שלם מקדמה — ואנחנו נעשה את השאר.
+          <p className="text-lg sm:text-xl text-ink-secondary max-w-xl mx-auto mb-12 leading-relaxed">
+            בחר חבילה, ראה מפרט, שלם מקדמה —
             <br className="hidden sm:block" />
-            ללא פגישות, ללא הצעות מחיר אינסופיות, ללא הפתעות.
+            ואנחנו נעשה את השאר.
           </p>
         </Reveal>
 
         <Reveal immediate delay={0.3}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
             <Link href="/auth" className="btn-primary">
               בחר את המשרד שלך
               <ArrowLeft />
@@ -110,14 +100,14 @@ function Hero() {
         </Reveal>
 
         <Reveal immediate delay={0.4}>
-          <p className="text-xs text-ink-secondary">
-            חינם · ללא התחייבות · החזר מלא תוך 30 יום אם לא מתאים
+          <p className="text-xs text-ink-secondary tracking-wide">
+            חינם · ללא התחייבות · החזר מלא תוך 30 יום
           </p>
         </Reveal>
       </div>
 
       <Reveal delay={0.5}>
-        <div className="container-prose pb-20">
+        <div className="container-prose pb-24">
           <HeroPreview />
         </div>
       </Reveal>
@@ -125,52 +115,34 @@ function Hero() {
   );
 }
 
-/* ─────────────────────────── STATS ─────────────────────────── */
-
 function Stats() {
+  const items = [
+    { value: "126", label: "פרויקטים שהושלמו" },
+    { value: "220K", label: "מ״ר שעוצבו" },
+    { value: "4.9", label: "דירוג ממוצע" },
+  ];
+
   return (
-    <section className="border-y border-line bg-surface-secondary">
-      <div className="container-prose py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-4">
-          <Reveal>
-            <div className="text-center">
-              <div className="text-5xl sm:text-6xl font-extrabold text-primary-500 mb-2 tracking-tight tabular-nums">
-                <CountUp to={126} />
+    <section className="border-y border-line bg-paper">
+      <div className="container-prose py-20 sm:py-28">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 sm:gap-4 sm:divide-x sm:divide-line sm:divide-x-reverse">
+          {items.map((it, i) => (
+            <Reveal key={it.label} delay={i * 0.08}>
+              <div className="text-center px-4">
+                <div className="font-serif font-light text-7xl sm:text-8xl text-ink-primary mb-4 tracking-tight tabular-nums leading-none">
+                  {it.value}
+                </div>
+                <div className="text-[11px] text-ink-secondary uppercase tracking-[0.25em] font-medium">
+                  {it.label}
+                </div>
               </div>
-              <div className="text-sm text-ink-secondary uppercase tracking-wider font-medium">
-                פרויקטים שהושלמו
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.1}>
-            <div className="text-center">
-              <div className="text-5xl sm:text-6xl font-extrabold text-primary-500 mb-2 tracking-tight tabular-nums">
-                <CountUp to={220000} />
-              </div>
-              <div className="text-sm text-ink-secondary uppercase tracking-wider font-medium">
-                מ״ר שעוצבו
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.2}>
-            <div className="text-center">
-              <div className="text-5xl sm:text-6xl font-extrabold text-primary-500 mb-2 tracking-tight tabular-nums">
-                <CountUp to={4.9} decimals={1} />
-              </div>
-              <div className="text-sm text-ink-secondary uppercase tracking-wider font-medium">
-                דירוג ממוצע
-              </div>
-            </div>
-          </Reveal>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
   );
 }
-
-/* ─────────────────────────── HOW IT WORKS ─────────────────────────── */
 
 function HowItWorks() {
   const steps = [
@@ -192,25 +164,27 @@ function HowItWorks() {
     },
   ];
   return (
-    <section id="how" className="py-24 bg-white">
+    <section id="how" className="py-24 sm:py-32 bg-paper">
       <div className="container-prose">
         <Reveal>
-          <div className="text-center mb-16">
-            <p className="eyebrow mb-3">ארבעה צעדים</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-ink-primary tracking-tight">
-              ככה זה עובד
-            </h2>
+          <div className="mb-20 text-center">
+            <p className="eyebrow mb-4 mx-auto">ארבעה צעדים</p>
+            <h2 className="display-h text-4xl sm:text-5xl">ככה זה עובד</h2>
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="arch-rule mb-12" />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
           {steps.map((s, i) => (
             <Reveal key={s.n} delay={i * 0.08}>
-              <div className="card card-hover p-7 h-full">
-                <div className="text-primary-500 text-sm font-bold mb-4 tracking-wider">
+              <div className="relative h-full">
+                <div className="font-serif text-5xl text-ink-primary/15 mb-4 tabular-nums leading-none">
                   {s.n}
                 </div>
-                <h3 className="text-lg font-bold text-ink-primary mb-2">{s.title}</h3>
+                <h3 className="font-serif text-2xl text-ink-primary mb-3 leading-tight">
+                  {s.title}
+                </h3>
                 <p className="text-ink-secondary text-sm leading-relaxed">{s.body}</p>
               </div>
             </Reveal>
@@ -221,22 +195,20 @@ function HowItWorks() {
   );
 }
 
-/* ─────────────────────────── PACKAGES PREVIEW ─────────────────────────── */
-
 function PackagesPreview() {
   const packages = PREVIEW_ORDER.map(
     (id) => PACKAGES.find((p) => p.id === id)!
   );
   return (
-    <section className="py-24 bg-surface-secondary border-y border-line">
+    <section className="py-24 sm:py-32 bg-surface-secondary border-y border-line">
       <div className="container-prose">
         <Reveal>
-          <div className="text-center mb-16">
-            <p className="eyebrow mb-3">חבילות</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-ink-primary tracking-tight">
-              ארבע רמות. שקיפות מלאה.
+          <div className="text-center mb-20">
+            <p className="eyebrow mb-4 mx-auto">חבילות</p>
+            <h2 className="display-h text-4xl sm:text-5xl mb-5">
+              ארבע רמות. <span className="serif-accent">שקיפות מלאה.</span>
             </h2>
-            <p className="text-ink-secondary mt-4 max-w-xl mx-auto">
+            <p className="text-ink-secondary max-w-xl mx-auto leading-relaxed">
               מאסנשיאל ועד סיגנצ׳ר — בחר את הרמה שמתאימה למשרד שלך, ראה מחיר מיידית.
             </p>
           </div>
@@ -248,24 +220,38 @@ function PackagesPreview() {
             return (
               <Reveal key={p.id} delay={i * 0.07}>
                 <div
-                  className={`card card-hover p-6 relative h-full ${
+                  className={`card card-hover relative h-full overflow-hidden ${
                     recommended ? "border-2 border-primary-500" : ""
                   }`}
                 >
                   {recommended && (
-                    <div className="absolute -top-3 inset-x-0 flex justify-center">
+                    <div className="absolute top-3 right-3 z-10">
                       <span className="badge-blue">★ הכי פופולרי</span>
                     </div>
                   )}
-                  <div className="text-xs font-bold text-ink-secondary tracking-widest mb-2">
-                    {p.name}
+                  <div className="aspect-[4/3] relative bg-surface-secondary">
+                    <Image
+                      src={TIER_HERO_IMAGES[p.id].src}
+                      alt={TIER_HERO_IMAGES[p.id].alt}
+                      fill
+                      sizes="(min-width:1024px) 22vw, 45vw"
+                      className="object-cover"
+                    />
                   </div>
-                  <div className="text-lg font-bold text-ink-primary mb-4">{p.name_he}</div>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-extrabold text-primary-500 tabular-nums">
-                      {formatILS(p.price_per_sqm)}
-                    </span>
-                    <span className="text-sm text-ink-secondary">/ מ״ר</span>
+                  <div className="p-6">
+                    <div className="text-[10px] font-semibold text-ink-secondary tracking-[0.25em] uppercase mb-2">
+                      {p.name}
+                    </div>
+                    <div className="font-serif text-2xl text-ink-primary mb-4 leading-tight">
+                      {p.name_he}
+                    </div>
+                    <div className="arch-rule mb-4" />
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-serif font-light text-4xl text-ink-primary tabular-nums">
+                        {formatILS(p.price_per_sqm)}
+                      </span>
+                      <span className="text-sm text-ink-secondary">/ מ״ר</span>
+                    </div>
                   </div>
                 </div>
               </Reveal>
@@ -274,7 +260,7 @@ function PackagesPreview() {
         </div>
 
         <Reveal delay={0.3}>
-          <div className="text-center mt-12">
+          <div className="text-center mt-16">
             <Link href="/auth" className="btn-primary">
               בחר את החבילה שלך
               <ArrowLeft />
@@ -286,49 +272,47 @@ function PackagesPreview() {
   );
 }
 
-/* ─────────────────────────── GALLERY ─────────────────────────── */
-
 function Gallery() {
-  const projects = [
-    { name: "Cyber Engineering", area: "320 מ״ר", style: "Premium" },
-    { name: "Microsoft Tel Aviv", area: "850 מ״ר", style: "Signature" },
-    { name: "FinTech HQ", area: "450 מ״ר", style: "Premium" },
-    { name: "Studio Loft", area: "180 מ״ר", style: "Classic" },
-    { name: "Legal Partners", area: "260 מ״ר", style: "Signature" },
-    { name: "Creative Agency", area: "210 מ״ר", style: "Classic" },
-  ];
   return (
-    <section id="projects" className="py-24 bg-white">
+    <section id="projects" className="py-24 sm:py-32 bg-paper">
       <div className="container-prose">
         <Reveal>
-          <div className="text-center mb-16">
-            <p className="eyebrow mb-3">פרויקטים אחרונים</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-ink-primary tracking-tight">
-              עבודה מדברת בעד עצמה
+          <div className="text-center mb-20">
+            <p className="eyebrow mb-4 mx-auto">פרויקטים אחרונים</p>
+            <h2 className="display-h text-4xl sm:text-5xl">
+              עבודה <span className="serif-accent">מדברת בעד עצמה</span>
             </h2>
           </div>
         </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {projects.map((p, i) => (
-            <Reveal key={p.name} delay={(i % 3) * 0.08}>
-              <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface-secondary border border-line card-hover">
-                <div
-                  className="absolute inset-0 opacity-60 group-hover:opacity-80 transition-opacity duration-500"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #F8F9FC 0%, #EFF2F8 60%, #DBEAFE 100%)",
-                  }}
+          {GALLERY_PHOTOS.map((photo, i) => (
+            <Reveal key={photo.src} delay={(i % 3) * 0.08}>
+              <figure className="group relative aspect-[4/5] overflow-hidden rounded-2xl border border-line card-hover bg-surface-secondary">
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/40 to-transparent" />
-                <div className="absolute bottom-0 inset-x-0 p-6">
-                  <div className="text-xs text-primary-500 font-bold tracking-wider uppercase mb-1">
-                    {p.style}
+                <div className="absolute inset-0 bg-gradient-to-t from-ink-primary/85 via-ink-primary/30 to-transparent" />
+                <figcaption className="absolute bottom-0 inset-x-0 p-7 text-paper">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-[10px] font-semibold tracking-[0.25em] uppercase text-paper/70">
+                      {photo.tier}
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-paper/40" />
+                    <span className="text-[10px] tracking-wider text-paper/70">
+                      {ROOM_LABELS[photo.category]}
+                    </span>
                   </div>
-                  <div className="text-xl font-bold text-ink-primary mb-1">{p.name}</div>
-                  <div className="text-sm text-ink-secondary">{p.area}</div>
-                </div>
-              </div>
+                  <div className="font-serif text-2xl mb-1 leading-tight">
+                    {photo.project}
+                  </div>
+                  <div className="text-sm text-paper/70 tabular-nums">{photo.area}</div>
+                </figcaption>
+              </figure>
             </Reveal>
           ))}
         </div>
@@ -336,8 +320,6 @@ function Gallery() {
     </section>
   );
 }
-
-/* ─────────────────────────── FAQ ─────────────────────────── */
 
 function Faq() {
   const items = [
@@ -363,31 +345,31 @@ function Faq() {
     },
   ];
   return (
-    <section className="py-24 bg-surface-secondary border-t border-line">
+    <section className="py-24 sm:py-32 bg-surface-secondary border-t border-line">
       <div className="container-prose max-w-3xl">
         <Reveal>
-          <div className="text-center mb-16">
-            <p className="eyebrow mb-3">שאלות נפוצות</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-ink-primary tracking-tight">
-              בלי קטנות
-            </h2>
+          <div className="text-center mb-20">
+            <p className="eyebrow mb-4 mx-auto">שאלות נפוצות</p>
+            <h2 className="display-h text-4xl sm:text-5xl">בלי קטנות</h2>
           </div>
         </Reveal>
 
-        <div className="space-y-3">
+        <div className="border-t border-line">
           {items.map((it, i) => (
             <Reveal key={it.q} delay={i * 0.05}>
-              <details className="group card p-6 cursor-pointer open:border-primary-500 open:shadow-card transition-all">
-                <summary className="flex items-center justify-between gap-4 list-none rounded outline-none focus-visible:shadow-ring-blue">
-                  <span className="text-base font-semibold text-ink-primary">{it.q}</span>
+              <details className="group border-b border-line py-6 cursor-pointer transition-colors">
+                <summary className="flex items-center justify-between gap-6 list-none rounded outline-none focus-visible:shadow-ring-blue">
+                  <span className="font-serif text-xl text-ink-primary leading-snug">
+                    {it.q}
+                  </span>
                   <span
                     aria-hidden="true"
-                    className="text-primary-500 text-2xl group-open:rotate-45 transition-transform duration-300 leading-none"
+                    className="text-ink-primary text-3xl font-light group-open:rotate-45 transition-transform duration-300 leading-none flex-shrink-0"
                   >
                     +
                   </span>
                 </summary>
-                <p className="mt-4 text-ink-secondary leading-relaxed">{it.a}</p>
+                <p className="mt-4 text-ink-secondary leading-relaxed pe-12">{it.a}</p>
               </details>
             </Reveal>
           ))}
@@ -397,20 +379,28 @@ function Faq() {
   );
 }
 
-/* ─────────────────────────── CTA BOTTOM ─────────────────────────── */
-
 function CtaBottom() {
   return (
-    <section className="py-24 bg-white">
+    <section className="relative py-32 sm:py-40 bg-paper overflow-hidden">
+      <div className="absolute inset-0 bg-blueprint opacity-60 -z-10" />
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 80% at 50% 100%, rgba(200,169,110,0.10), transparent 60%)",
+        }}
+      />
       <div className="container-prose max-w-3xl text-center">
         <Reveal>
-          <h2 className="text-3xl sm:text-4xl font-bold text-ink-primary tracking-tight mb-5">
-            מוכן לראות מחיר?
+          <h2 className="display-h text-5xl sm:text-6xl mb-8">
+            מוכן לראות <span className="serif-accent">מחיר?</span>
           </h2>
         </Reveal>
         <Reveal delay={0.1}>
-          <p className="text-lg text-ink-secondary mb-10">
-            שלוש דקות. אפס מחויבות. כל המידע שאתה צריך כדי להחליט.
+          <p className="text-lg text-ink-secondary mb-12 leading-relaxed">
+            שלוש דקות. אפס מחויבות.
+            <br className="hidden sm:block" />
+            כל המידע שאתה צריך כדי להחליט.
           </p>
         </Reveal>
         <Reveal delay={0.2}>
@@ -418,7 +408,7 @@ function CtaBottom() {
             בחר את המשרד שלך
             <ArrowLeft />
           </Link>
-          <p className="text-xs text-ink-secondary mt-6">
+          <p className="text-xs text-ink-secondary mt-6 tracking-wide">
             חינם · ללא פגישה · ללא רישום אשראי
           </p>
         </Reveal>
@@ -426,8 +416,6 @@ function CtaBottom() {
     </section>
   );
 }
-
-/* ─────────────────────────── ICONS ─────────────────────────── */
 
 function ArrowLeft() {
   return (

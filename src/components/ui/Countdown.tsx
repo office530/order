@@ -26,30 +26,40 @@ function calc(deadline: string): Remaining {
   };
 }
 
-/**
- * Countdown — ticks every second to a given deadline.
- *
- * Renders as a single tabular block: `14d 06:13:36`. Days are spelled out
- * because they're easier to read at a glance; hours/minutes/seconds use
- * a colon-separated digital-clock format.
- *
- * Starts at `null` on first render to avoid hydration mismatch
- * (server `Date.now()` ≠ client `Date.now()`).
- */
+// Starts at `null` on first render to avoid hydration mismatch
+// (server `Date.now()` ≠ client `Date.now()`).
 export default function Countdown({ deadline, className = "" }: Props) {
   const [remaining, setRemaining] = useState<Remaining | null>(null);
 
   useEffect(() => {
-    setRemaining(calc(deadline));
-    const id = setInterval(() => setRemaining(calc(deadline)), 1000);
+    let id: ReturnType<typeof setInterval> | undefined;
+    const tick = () => {
+      const next = calc(deadline);
+      setRemaining((prev) => {
+        if (
+          prev &&
+          prev.days === next.days &&
+          prev.hours === next.hours &&
+          prev.minutes === next.minutes &&
+          prev.seconds === next.seconds
+        ) {
+          return prev;
+        }
+        return next;
+      });
+      if (new Date(deadline).getTime() - Date.now() <= 0 && id !== undefined) {
+        clearInterval(id);
+      }
+    };
+    tick();
+    id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, [deadline]);
 
   if (!remaining) {
-    // Reserve space so layout doesn't shift when the timer arrives
     return (
       <span
-        className={`inline-block tabular-nums text-sm font-semibold text-ink-primary ${className}`}
+        className={`inline-block tabular-nums text-sm font-semibold ${className}`}
         dir="ltr"
       >
         — — :— — :— —
@@ -63,15 +73,15 @@ export default function Countdown({ deadline, className = "" }: Props) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 tabular-nums text-sm font-semibold text-ink-primary ${className}`}
+      className={`inline-flex items-center gap-1.5 tabular-nums text-sm font-semibold ${className}`}
       dir="ltr"
       aria-label={`${remaining.days} ימים ${hh} שעות ${mm} דקות ${ss} שניות`}
     >
       <span>
         {remaining.days}
-        <span className="text-ink-secondary font-normal mx-0.5">ימ׳</span>
+        <span className="opacity-60 font-normal mx-0.5">ימ׳</span>
       </span>
-      <span className="text-ink-secondary">·</span>
+      <span className="opacity-40">·</span>
       <span>
         {hh}:{mm}:{ss}
       </span>
