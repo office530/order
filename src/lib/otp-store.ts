@@ -176,6 +176,17 @@ export function generateOtpCode(): string {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
+/**
+ * Test bypass: a single phone number (canonical form) that always uses
+ * `TEST_BYPASS_CODE` and skips SMS dispatch. Configured via `TEST_BYPASS_PHONE`
+ * env var. Used to demo the full funnel in production without paying for SMS.
+ */
+export const TEST_BYPASS_CODE = "1234";
+export function isTestBypassPhone(canonicalPhone: string): boolean {
+  const target = process.env.TEST_BYPASS_PHONE?.replace(/[\s\-().]/g, "") ?? "";
+  return target.length > 0 && target === canonicalPhone;
+}
+
 export const OTP_TTL_MS = 5 * 60 * 1000; // 5 minutes
 export const OTP_RATE_LIMIT_MAX = 3; // sends
 export const OTP_RATE_LIMIT_WINDOW_MIN = 60; // per hour

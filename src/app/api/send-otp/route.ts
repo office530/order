@@ -3,9 +3,11 @@ import { normalizePhone } from "@/lib/phone";
 import {
   generateOtpCode,
   getOtpStore,
+  isTestBypassPhone,
   OTP_RATE_LIMIT_MAX,
   OTP_RATE_LIMIT_WINDOW_MIN,
   OTP_TTL_MS,
+  TEST_BYPASS_CODE,
 } from "@/lib/otp-store";
 import { sendOtpSms } from "@/lib/sms";
 
@@ -40,25 +42,29 @@ export async function POST(request: Request) {
     );
   }
 
-  const code = generateOtpCode();
+  const bypass = isTestBypassPhone(phone);
+  const code = bypass ? TEST_BYPASS_CODE : generateOtpCode();
   const expiresAt = Date.now() + OTP_TTL_MS;
 
   await store.create({ phone, code, expiresAt });
 
-  // Dispatch via the active SMS provider (console / twilio / inforu).
-  // We don't fail the request if SMS fails — the user can resend.
-  const smsResult = await sendOtpSms(phone, code);
-  if (!smsResult.ok) {
-    // eslint-disable-next-line no-console
-    console.error(
-      `[send-otp] SMS failed via ${smsResult.provider}: ${smsResult.error}`
-    );
+  // Skip the SMS dispatch entirely for the bypass number.
+  let provider: string = "bypass";
+  if (!bypass) {
+    const smsResult = await sendOtpSms(phone, code);
+    provider = smsResult.provider;
+    if (!smsResult.ok) {
+      // eslint-disable-next-line no-console
+      console.error(
+        `[send-otp] SMS failed via ${smsResult.provider}: ${smsResult.error}`
+      );
+    }
   }
 
   return NextResponse.json({
     ok: true,
     expiresAt,
-    provider: smsResult.provider,
+    provider,
     // Only return the code in dev — never in production
     devCode: process.env.NODE_ENV !== "production" ? code : undefined,
   });
